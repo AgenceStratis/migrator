@@ -8,5 +8,4 @@ require 'Migrator.php';
 for ( $i = 1; $i < $argc; $i ++ ) {
 	
 	$migrator = new Stratis\Migrator( $argv[ $i ] );
-	$migrator->run();
 }
