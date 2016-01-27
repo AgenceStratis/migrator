@@ -12,4 +12,4 @@ source:
 dest:
   type: csv
   options:
-    file: examples/migrator/csv-csv/result.csv
+    file: examples/migrator/result.csv

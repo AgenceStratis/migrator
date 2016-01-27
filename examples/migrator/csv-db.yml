@@ -1,7 +1,7 @@
 source:
   type: csv
   options:
-    file: examples/migrator/csv-csv/source.csv
+    file: examples/migrator/source.csv
 
 dest:
   type: sql
