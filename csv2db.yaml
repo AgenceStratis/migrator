@@ -1,0 +1,22 @@
+source:
+  type: csv
+  options:
+    file: testdata.csv
+
+dest:
+  type: sql
+  options:
+    database_type: mysql
+    database_name: io
+    server: localhost
+    username: emmanuelvodor
+    password: 
+    charset: utf8
+    table: test
+
+processors:
+  fields:
+    value:
+  values:
+    value:
+      - round

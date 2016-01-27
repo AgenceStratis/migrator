@@ -1,0 +1,15 @@
+source:
+  type: csv
+  options:
+    file: testdata.csv
+
+dest:
+  type: csv
+  options:
+    file: testdata2.csv
+
+processors:
+  fields:
+    value:
+  values:
+    value:

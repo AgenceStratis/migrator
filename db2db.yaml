@@ -1,0 +1,27 @@
+source:
+  type: sql
+  options:
+    database_type: mysql
+    database_name: io
+    server: localhost
+    username: emmanuelvodor
+    password: 
+    charset: utf8
+    table: article
+
+dest:
+  type: sql
+  options:
+    database_type: mysql
+    database_name: io
+    server: localhost
+    username: emmanuelvodor
+    password: 
+    charset: utf8
+    table: article2
+
+processors:
+  values:
+  fields:
+    title: content
+    content: title
