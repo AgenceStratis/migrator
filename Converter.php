@@ -16,6 +16,10 @@ class Converter implements ItemConverterInterface {
 	
 	protected function processValues ( &$item ) {
 		
+		if ( ! array_key_exists( 'values', $this->processors )) {
+			return;
+		}
+		
 		foreach ( $this->processors['values'] as $field => $params ) {
 			
 			// params = array (multiples functions)
@@ -60,6 +64,10 @@ class Converter implements ItemConverterInterface {
 	
 	protected function processFields ( &$item, &$route ) {
 		
+		if ( ! array_key_exists( 'fields', $this->processors )) {
+			return;
+		}
+		
 		foreach ( $this->processors['fields'] as $field => $params ) {
 			
 			// params = array (multiples functions)
@@ -85,8 +93,11 @@ class Converter implements ItemConverterInterface {
 			
 			// params = string (assign data)
 			if ( is_string( $params )) {
-				// array_key_exists( $params, $item )
-				$route[ $field ] = $params;
+				
+				if ( array_key_exists( $params, $item )) {
+					
+					$route[ $field ] = $params;
+				}
 			}
 		}
 	}
@@ -107,13 +118,8 @@ class Converter implements ItemConverterInterface {
 		
 		$route = $this->route( $item );
 		
-		if ( array_key_exists( 'values', $this->processors )) {
-			$this->processValues( $item );
-		}
-		
-		if ( array_key_exists( 'fields', $this->processors )) {
-			$this->processFields( $item, $route );
-		}
+		$this->processValues( $item );
+		$this->processFields( $item, $route );
 		
 		return $this->processRoute( $item, $route );
 	}
