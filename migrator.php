@@ -26,7 +26,7 @@ use Ddeboer\DataImport\ValueConverter\CallbackValueConverter;
 // - [warn] no processors field/value given
 // - each args = new converter
 
-class Converter {
+class Migrator {
 	
 	protected $config = array();
 	protected $workflow = null;
