@@ -1,20 +1,17 @@
 {
-    "name": "emmanuelvodor/import-export",
+    "name": "stratis/migrator",
     "authors": [
         {
-            "name": "emmanuelvodor",
+            "name": "Emmanuel Vodor",
             "email": "emmanuelvodor@stratis.fr"
         }
     ],
     "require": {
-        "pear/console_commandline": "^1.2",
         "ddeboer/data-import": "@stable",
         "psr/log": "^1.0",
         "symfony/yaml": "^3.0",
         "monolog/monolog": "^1.17",
         "catfan/Medoo": "^1.0",
-        "portphp/portphp": "dev-master",
-        "league/csv": "^8.0",
         "symfony/console": "^3.0"
     }
 }
