@@ -1,7 +1,7 @@
 source:
   type: csv
   options:
-    file: testdata.csv
+    file: examples/migrator/csv-csv/source.csv
 
 dest:
   type: sql
@@ -9,14 +9,7 @@ dest:
     database_type: mysql
     database_name: io
     server: localhost
-    username: emmanuelvodor
+    username: root
     password: 
     charset: utf8
     table: test
-
-processors:
-  fields:
-    value:
-  values:
-    value:
-      - round

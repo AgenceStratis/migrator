@@ -1,0 +1,9 @@
+source:
+  type: csv
+  options:
+    file: examples/migrator/csv-csv/source.csv
+
+dest:
+  type: csv
+  options:
+    file: examples/migrator/csv-csv/result.csv

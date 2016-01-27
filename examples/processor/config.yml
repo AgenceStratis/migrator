@@ -1,0 +1,16 @@
+source:
+  type: csv
+  options:
+    file: examples/processor/source.csv
+
+dest:
+  type: csv
+  options:
+    file: examples/processor/result.csv
+
+processors:
+  values:
+    myNumber:
+      - round
+    myText:
+      - upperCase
