@@ -3,3 +3,4 @@ _old/*
 composer.lock
 TODO
 examples/migrator/result.csv
+migrator.log
