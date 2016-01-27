@@ -17,17 +17,6 @@ use Ddeboer\DataImport\Writer\CallbackWriter;
 use Ddeboer\DataImport\Workflow;
 use Ddeboer\DataImport\ItemConverter\CallbackItemConverter;
 
-class Config {
-	
-	protected $data = array();
-	
-	public function set ( $data ) { }
-	
-	public function get () { }
-	
-	public function has () { }
-}
-
 class Migrator {
 	
 	protected $config;
