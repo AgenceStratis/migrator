@@ -4,8 +4,9 @@
 
 require __DIR__ . '/vendor/autoload.php';
 
-require 'Migrator.php';
-require 'Converter.php';
+include 'src/Migrator.php';
+include 'src/Converter.php';
+include 'src/Config.php';
 
 for ( $i = 1; $i < $argc; $i ++ ) {
 	
