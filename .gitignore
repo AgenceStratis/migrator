@@ -2,3 +2,4 @@ vendor/*
 _old/*
 composer.lock
 TODO
+examples/migrator/result.csv
