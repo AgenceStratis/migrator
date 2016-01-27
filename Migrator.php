@@ -1,30 +1,18 @@
 <?php
 
-// require __DIR__ . 'vendor/autoload.php';
+namespace Stratis;
+
+use medoo;
 
 use Symfony\Component\Yaml\Yaml;
 
-use Ddeboer\DataImport\Workflow;
-
 use Ddeboer\DataImport\Reader\CsvReader;
 use Ddeboer\DataImport\Reader\PdoReader;
-
-use Ddeboer\DataImport\Writer\ArrayWriter;
 use Ddeboer\DataImport\Writer\CsvWriter;
 use Ddeboer\DataImport\Writer\PdoWriter;
 use Ddeboer\DataImport\Writer\CallbackWriter;
-
+use Ddeboer\DataImport\Workflow;
 use Ddeboer\DataImport\ItemConverter\CallbackItemConverter;
-use Ddeboer\DataImport\ItemConverter\MappingItemConverter;
-use Ddeboer\DataImport\ValueConverter\CallbackValueConverter;
-
-// todo:
-// - implements workflow
-// - common converters
-// - use converters in loop (use order -> supported)
-// - [bug] no header in csvwriter
-// - [warn] no processors field/value given
-// - each args = new converter
 
 class Migrator {
 	
@@ -32,6 +20,7 @@ class Migrator {
 	protected $workflow = null;
 	
 	public function __construct ( $conf ) {
+		
 		$this->loadConf( $conf );
 	}
 	
@@ -74,7 +63,6 @@ class Migrator {
 			
 			$db = new medoo( $params );
 			$reader = new PdoReader( $db->pdo, 'SELECT * FROM ' . $table );
-			// var_dump( $reader->getFields() );
 		}
 		
 		return $reader;
@@ -189,7 +177,6 @@ class Migrator {
 				if ( is_string( $params )) {
 					// array_key_exists( $params, $item )
 					$route[ $field ] = $params;
-					// var_dump( $params );
 				}
 			}
 			
@@ -198,6 +185,7 @@ class Migrator {
 			$routedItem = array();
 			
 			foreach ( $route as $baseField => $targetField ) {
+				
 				$routedItem[ $targetField ] = $item[ $baseField ];
 			}
 			
