@@ -1,5 +1,7 @@
 <?php
 
+namespace Stratis\Migrator;
+
 use Ddeboer\DataImport\ItemConverter\ItemConverterInterface;
 
 class Converter implements ItemConverterInterface {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Stratis;
+namespace Stratis\Migrator;
 
 use medoo;
 
@@ -17,14 +17,14 @@ use Ddeboer\DataImport\Writer\CallbackWriter;
 use Ddeboer\DataImport\Workflow;
 use Ddeboer\DataImport\ItemConverter\CallbackItemConverter;
 
-class Migrator {
-	
+class Migrator
+{
 	protected $config;
 	protected $logger;
 	protected $workflow = null;
 	
-	public function __construct ( $file ) {
-		
+	public function __construct ( $file )
+	{
 		// setup logger
 		$this->logger = new Logger( 'migrator' );
 		$this->logger->pushHandler( new StreamHandler( 'migrator.log', Logger::WARNING ));
@@ -52,7 +52,6 @@ class Migrator {
 		$workflow->addWriter( $writer );
 		
 		if ( array_key_exists( 'processors', $this->config )) {
-			
 			$converter = new Converter( $this->config['processors'] );
 			$workflow->addItemConverter( $converter );
 		}
@@ -60,13 +59,12 @@ class Migrator {
 		$workflow->process();
 	}
 	
-	protected function getReader () {
-		
+	protected function getReader ()
+	{
 		$reader = null;
 		$type = $this->config['source']['type'];
 		
 		if ( $type == 'csv' ) {
-			
 			$file = $this->config['source']['options']['file'];
 			$source = new \SplFileObject( $file );
 			$reader = new CsvReader( $source );
@@ -74,10 +72,8 @@ class Migrator {
 		}
 		
 		if ( $type == 'sql' ) {
-			
 			$params = $this->config['source']['options'];
 			$table = $this->config['source']['options']['table'];
-			
 			$db = new medoo( $params );
 			$reader = new PdoReader( $db->pdo, 'SELECT * FROM ' . $table );
 		}
@@ -85,42 +81,32 @@ class Migrator {
 		return $reader;
 	}
 	
-	protected function getWriter () {
-		
+	protected function getWriter ()
+	{
 		$writer = null;
 		$type = $this->config['dest']['type'];
 		
 		if ( $type == 'csv' ) {
-			
 			$file = $this->config['dest']['options']['file'];
 			$header = $this->config['dest']['options']['fields'];
-			
 			$writer = new CsvWriter();
 			$writer->setStream( fopen( $file, 'w' ));
 			// $writer->writeItem( $header );
 		}
 		
 		if ( $type == 'sql' ) {
-			
 			$params = $this->config['dest']['options'];
 			$table = $this->config['dest']['options']['table'];
-			
 			$db = new medoo( $params );
 			$writer = new PdoWriter( $db->pdo, $table );
 		}
 		
-		// console logs
-		// $writer = new CallbackWriter( function ( $row ) {
-		// 	var_dump( $row );
-		// });
+		if (! $type) {
+			$writer = new CallbackWriter( function ( $row ) {
+				var_dump( $row );
+			});
+		}
 		
 		return $writer;
-	}
-	
-	public function itemConverter () {
-		
-		return  function ( $item ) {
-
-		};
 	}
 }

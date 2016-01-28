@@ -3,12 +3,10 @@
 // Usage: cmd.php config.yaml...
 
 require __DIR__ . '/vendor/autoload.php';
+require __DIR__ . '/src/autoload.php';
 
-include 'src/Migrator.php';
-include 'src/Converter.php';
-include 'src/Config.php';
+use Stratis\Migrator\Migrator;
 
-for ( $i = 1; $i < $argc; $i ++ ) {
-	
-	$migrator = new Stratis\Migrator( $argv[ $i ] );
+for ($i = 1; $i < $argc; $i++) {
+	$migrator = new Migrator($argv[$i]);
 }
