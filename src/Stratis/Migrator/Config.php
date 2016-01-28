@@ -30,8 +30,7 @@ class Config
 		foreach (func_get_args() as $arg) {
 			if (array_key_exists($arg, $search)) {
 				$search = $search[ $arg ];
-			}
-			else {
+			} else {
 				$search = null;
 				break;
 			}
