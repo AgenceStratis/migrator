@@ -2,10 +2,18 @@
 
 namespace Stratis\Migrator;
 
+/**
+ * Config parser for Migrator
+ */
 class Config
 {
 	protected $confData = array();
 	
+	/**
+	 * Constructor.
+	 *
+	 * @param array $fileConf Parsed YAML file
+	 */
 	public function __construct($fileConf)
 	{
 		$options = array('file', 'fields' => array(), 'database_type',
@@ -19,6 +27,18 @@ class Config
 		$this->confData = array_merge($baseConf, $fileConf);
 	}
 	
+	/**
+	 * Get config value(s)
+	 *
+	 * Crawl confData recursively, using arguments as array keys.
+	 * Return null if item doesn't exists.
+	 *
+	 * Usage: $config->get('source', 'options', 'file');
+	 *
+	 * @param string Each key must be a string
+	 *
+	 * @return mixed Return found data
+	 */
 	public function get()
 	{
 		if (func_num_args() == 0) {
