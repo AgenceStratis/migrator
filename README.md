@@ -1,13 +1,44 @@
-# migrator
-PHP Data Import Export Migrator (CSV, Database, CMS)
+Migrator Component
+==============
+PHP Data Import/Export (CSV, Database, CMS).
 
-Import/export directions
+Usage
+---------
 
-* DB > CSV
-* DB > DB
-* CSV > CSV
-* CSV > DB
+```php
+use Stratis\Migrator\Migrator;
 
-## Configuration
+$migrator = new Migrator( 'config.yaml' );
+```
 
-Based on YAML config files.
+Configuration file
+---------
+
+* CSV file
+```yaml
+source/dest:
+  type: csv
+  options:
+    file: examples/processor/source.csv
+```
+
+* SQL Database
+```yaml
+source/dest:
+  type: sql
+  options:
+    database_type: mysql
+    database_name: io
+    server: localhost
+    username: root
+    password: 
+    charset: utf8
+    table: test
+```
+
+* Processors
+```yaml
+processors:
+  values:
+  fields:
+```
