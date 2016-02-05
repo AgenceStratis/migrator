@@ -1,17 +1,26 @@
 {
-    "name": "stratis/migrator",
-    "authors": [
-        {
-            "name": "Emmanuel Vodor",
-            "email": "emmanuelvodor@stratis.fr"
-        }
-    ],
-    "require": {
-        "ddeboer/data-import": "@stable",
-        "psr/log": "^1.0",
-        "symfony/yaml": "^3.0",
-        "monolog/monolog": "^1.17",
-        "catfan/Medoo": "^1.0",
-        "symfony/console": "^3.0"
-    }
+	"name": "stratis/migrator",
+	"type": "library",
+	"description": "Importer/Exporter for multiples data sources",
+    "homepage": "http://stratis.fr",
+    "license": "MIT",
+	"authors": [
+		{
+			"name": "Emmanuel Vodor",
+			"email": "emmanuelvodor@stratis.fr"
+		}
+	],
+	"require": {
+		"ddeboer/data-import": "@stable",
+		"psr/log": "^1.0",
+		"symfony/yaml": "^3.0",
+		"monolog/monolog": "^1.17",
+		"catfan/Medoo": "^1.0",
+		"symfony/console": "^3.0"
+	},
+	"autoload": {
+		"psr-4": {
+			"": "src/"
+		}
+	}
 }
