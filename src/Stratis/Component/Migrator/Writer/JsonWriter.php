@@ -3,6 +3,9 @@
 namespace Stratis\Component\Migrator\Writer;
 use Ddeboer\DataImport\Writer\AbstractStreamWriter;
 
+/**
+* JsonWriter
+*/
 class JsonWriter extends AbstractStreamWriter
 {
 	protected $count = 0;

@@ -4,8 +4,6 @@ namespace Stratis\Component\Migrator;
 
 use medoo;
 use Symfony\Component\Yaml\Yaml;
-use Monolog\Logger;
-use Monolog\Handler\StreamHandler;
 use Ddeboer\DataImport\Workflow;
 use Ddeboer\DataImport\ItemConverter\CallbackItemConverter;
 
@@ -20,6 +18,17 @@ use Ddeboer\DataImport\Writer\PdoWriter;
 use Ddeboer\DataImport\Writer\CallbackWriter;
 use Stratis\Component\Migrator\Writer\JsonWriter;
 
+/**
+* Stratis Migrator
+* Importer/Exporter for multiples data sources
+* 
+* Usage:
+* 	$migrator = new Migrator('config.yaml');
+* 	$migrator->process();
+*
+* @param string $file 
+* @param string $logger 
+*/
 class Migrator extends Workflow
 {
 	protected $configuration;

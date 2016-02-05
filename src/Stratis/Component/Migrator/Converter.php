@@ -1,6 +1,7 @@
 <?php
 
 //TODO: remove references usage
+//TODO: implements rulesValues and rulesFields
 
 namespace Stratis\Component\Migrator;
 use Ddeboer\DataImport\ItemConverter\ItemConverterInterface;
@@ -36,7 +37,7 @@ class Converter implements ItemConverterInterface {
 		foreach ($this->processors['values'] as $field => $params) {
 			
 			// params = array (multiples functions)
-			if (is_array($params) && count($params > 0)) {
+			if (is_array($params) && count($params) > 0) {
 				
 				$value = $item[$field];
 			
