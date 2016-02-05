@@ -9,6 +9,7 @@ Usage
 use Stratis\Migrator\Migrator;
 
 $migrator = new Migrator( 'config.yaml' );
+$migrator->process();
 ```
 
 Configuration file
