@@ -12,15 +12,15 @@ class Converter implements ItemConverterInterface {
 	
 	protected $processors = array();
 	
-	// rulesValues = array( 'round', 'toInteger' )...
-	// rulesFields = array( 'upperCase', 'lowerCase' )...
+	// rulesValues = array('round', 'toInteger')...
+	// rulesFields = array('upperCase', 'lowerCase')...
 		
 	/**
 	* Constructor
 	*
 	* @param array $processors Parameters from Migrator Config
 	*/
-	public function __construct ( $processors )
+	public function __construct ($processors)
 	{
 		$this->processors = $processors;
 	}
@@ -36,29 +36,29 @@ class Converter implements ItemConverterInterface {
 		foreach ($this->processors['values'] as $field => $params) {
 			
 			// params = array (multiples functions)
-			if ( is_array( $params ) && count( $params > 0 )) {
+			if (is_array($params) && count($params > 0)) {
 				
-				$value = $item[ $field ];
+				$value = $item[$field];
 			
-				if ( in_array( 'upperCase', $params )) {
-					$value = strtoupper( $value );
+				if (in_array('upperCase', $params)) {
+					$value = strtoupper($value);
 				}
 			
-				if ( in_array( 'stripTags', $params )) {
-					$value = strip_tags( $value );
+				if (in_array('stripTags', $params)) {
+					$value = strip_tags($value);
 				}
 			
-				if ( in_array( 'round', $params )) {
+				if (in_array('round', $params)) {
 					$value = $value | 0;
 				}
 				
-				$item[ $field ] = $value;
+				$item[$field] = $value;
 			}
 			
 			// params = string (assign data)
-			if ( is_string( $params )) {
+			if (is_string($params)) {
 				
-				$item[ $field ] = $params;
+				$item[$field] = $params;
 			}
 		}
 	}
@@ -86,34 +86,34 @@ class Converter implements ItemConverterInterface {
 	*
 	* @param array $item
 	*/
-	protected function processFields ( &$item, &$route ) {
-		
-		foreach ( $this->processors['fields'] as $field => $params ) {
+	protected function processFields (&$item, &$route)
+	{
+		foreach ($this->processors['fields'] as $field => $params) {
 			
 			// params = array (multiples functions)
-			if ( is_array( $params ) && count( $params > 0 )) {
+			if (is_array($params) && count($params) > 0) {
 				
 				$newKey = $field;
 				
-				if ( in_array( 'lowerCase', $params )) {
-					$newKey = strtolower( $newKey );
+				if (in_array('lowerCase', $params)) {
+					$newKey = strtolower($newKey);
 				}
 				
-				if ( in_array( 'upperCase', $params )) {
-					$newKey = strtoupper( $newKey );
+				if (in_array('upperCase', $params)) {
+					$newKey = strtoupper($newKey);
 				}
 			
-				if ( in_array( 'stripTags', $params )) {
-					$newKey = strip_tags( $newKey );
+				if (in_array('stripTags', $params)) {
+					$newKey = strip_tags($newKey);
 				}
 				
-				$item[ $newKey ] = $item[ $field ];
-				unset( $item[ $field ]);
+				$item[$newKey] = $item[$field];
+				unset($item[$field]);
 			}
 			
 			// params = string (assign data)
-			if ( is_string( $params ) && array_key_exists( $params, $item )) {
-				$route[ $field ] = $params;
+			if (is_string($params) && array_key_exists($params, $item)) {
+				$route[$field] = $params;
 			}
 		}
 	}
@@ -125,12 +125,12 @@ class Converter implements ItemConverterInterface {
 	* @param array $item
 	* @param array $route
 	*/
-	protected function processRoute ( $item, $route )
+	protected function processRoute($item, $route)
 	{
 		$routedItem = array();
 		
-		foreach ( $route as $baseField => $targetField ) {
-			$routedItem[ $targetField ] = $item[ $baseField ];
+		foreach ($route as $baseField => $targetField) {
+			$routedItem[$targetField] = $item[$baseField];
 		}
 		
 		return $routedItem;
@@ -142,13 +142,13 @@ class Converter implements ItemConverterInterface {
 	*
 	* @param array $item
 	*/
-	public function convert( $item ) {
+	public function convert($item)
+	{
+		$route = $this->route($item);
 		
-		$route = $this->route( $item );
+		$this->processValues($item);
+		$this->processFields($item, $route);
 		
-		$this->processValues( $item );
-		$this->processFields( $item, $route );
-		
-		return $this->processRoute( $item, $route );
+		return $this->processRoute($item, $route);
 	}
 }
