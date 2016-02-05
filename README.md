@@ -21,6 +21,7 @@ source/dest:
   type: csv
   options:
     file: examples/processor/data.csv
+```
 
 * JSON file
 ```yaml
