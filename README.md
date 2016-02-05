@@ -19,7 +19,14 @@ Configuration file
 source/dest:
   type: csv
   options:
-    file: examples/processor/source.csv
+    file: examples/processor/data.csv
+
+* JSON file
+```yaml
+source/dest:
+  type: json
+  options:
+    file: examples/processor/data.json
 ```
 
 * SQL Database
