@@ -22,68 +22,77 @@ use Stratis\Component\Migrator\Writer\JsonWriter;
 
 class Migrator extends Workflow
 {
-	protected $confData;
+	protected $configuration;
 	protected $logger;
 	protected $workflow = null;
 	
+	/**
+	* Constructor
+	*
+	* @param string $file 
+	* @param string $logger 
+	*/
 	public function __construct($file, $logger = null)
 	{
-		// echo $file;
-		// die;
-		// parent::
+		// init configuration data
+		$options = array('file', 'fields' => array(), 'database_type',
+			'database_name', 'server', 'username', 'password', 'charset', 'table');
 		
-		// setup logger
-		// $this->logger = new Logger('migrator');
-		// $this->logger->pushHandler(new StreamHandler('migrator.log', Logger::WARNING));
+		$this->configuration = array(
+			'source' => array('type', 'options' => $options),
+			'dest' => array('type', 'options' => $options),
+			'processors' => array('values' => array(), 'fields' => array()));
 		
-		if (! file_exists($file)) {
-			return;
-		}
-		
-		// get YAML config file data
+		// add custom config file
 		$this->loadConf($file);
 		
-		// input / output
+		// create i/o parsers
 		$reader = $this->getReader();
 		$writer = $this->getWriter();
 		
-		// build workflow
+		// init workflow
 		if ($logger !== null) {
 			parent::__construct($reader, $logger);
 		} else {
 			parent::__construct($reader);
 		}
 		
-		// add writer
 		$this->addWriter($writer);
 		
-		// add processors
 		$converter = new Converter($this->getConf('processors'));
 		$this->addItemConverter($converter);
 	}
 	
+	/**
+	* Load configuration file
+	*
+	* @param string $file 
+	*/
 	protected function loadConf($file)
 	{
-		$fileConf = Yaml::parse(file_get_contents($file));
+		if (! file_exists($file)) {
+			throw new \Exception('Specified config file does not exist');
+		}
 		
-		$options = array('file', 'fields' => array(), 'database_type',
-			'database_name', 'server', 'username', 'password', 'charset', 'table');
-		
-		$baseConf = array(
-			'source' => array('type', 'options' => $options),
-			'dest' => array('type', 'options' => $options),
-			'processors' => array('values' => array(), 'fields' => array()));
-		
-		$this->confData = array_merge($baseConf, $fileConf);
+		$conf = Yaml::parse(file_get_contents($file));
+		$this->configuration = array_merge($this->configuration, $conf);
 	}
 	
+	/**
+	* Get configuration
+	*
+	* Crawl $configuration and get a specific conf value
+	* example: $this->getConf('source', 'options', 'file');
+	*
+	* @params multiple strings
+	*/
 	public function getConf()
 	{
 		if (func_num_args() == 0) {
-			return $this->confData;
+			return $this->configuration;
 		}
 		
-		$search = $this->confData;
+		$search = $this->configuration;
 		
 		foreach (func_get_args() as $arg) {
 			if (array_key_exists($arg, $search)) {
@@ -97,6 +106,9 @@ class Migrator extends Workflow
 		return $search;
 	}
 	
+	/**
+	* Create reader object, according to config
+	*/
 	protected function getReader()
 	{
 		$type = $this->getConf('source', 'type');
@@ -126,13 +138,16 @@ class Migrator extends Workflow
 			}
 			
 			default: {
-				$reader = null;
+				throw new \Exception('Reader is not defined');
 			}
 		}
 		
 		return $reader;
 	}
 	
+	/**
+	* Create writer object, according to config
+	*/
 	protected function getWriter()
 	{
 		$type = $this->getConf('dest', 'type');
@@ -167,6 +182,7 @@ class Migrator extends Workflow
 			}
 			
 			default: {
+				// throw new \Exception('Writer is not defined');
 				$writer = new CallbackWriter(function($row) {
 					var_dump($row);
 				});

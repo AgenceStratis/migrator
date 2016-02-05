@@ -4,8 +4,8 @@ namespace Stratis\Component\Migrator;
 use Ddeboer\DataImport\ItemConverter\ItemConverterInterface;
 
 /**
- * ItemConverter for Migrator
- */
+* ItemConverter for Migrator
+*/
 class Converter implements ItemConverterInterface {
 	
 	protected $processors = array();
@@ -14,24 +14,23 @@ class Converter implements ItemConverterInterface {
 	// rulesFields = array( 'upperCase', 'lowerCase' )...
 		
 	/**
-	 * Constructor.
-	 *
-	 * @param array $processors Parameters from Migrator Config
-	 */
+	* Constructor.
+	*
+	* @param array $processors Parameters from Migrator Config
+	*/
 	public function __construct ( $processors )
 	{
 		$this->processors = $processors;
 	}
 	
 	/**
-	 * Process values
-	 *
-	 * Apply value modification according to processors (rules)
-	 *
-	 * @param array $item = 
-	 *
-	 * @return mixed Return found data
-	 */
+	* Process values
+	*
+	* Apply value modification according to processors (rules)
+	*
+	* @param array $item = 
+	* @return mixed Return found data
+	*/
 	protected function processValues ( &$item ) {
 		
 		foreach ($this->processors['values'] as $field => $params) {
