@@ -1,5 +1,7 @@
 <?php
 
+//TODO: remove references usage
+
 namespace Stratis\Component\Migrator;
 use Ddeboer\DataImport\ItemConverter\ItemConverterInterface;
 
@@ -14,7 +16,7 @@ class Converter implements ItemConverterInterface {
 	// rulesFields = array( 'upperCase', 'lowerCase' )...
 		
 	/**
-	* Constructor.
+	* Constructor
 	*
 	* @param array $processors Parameters from Migrator Config
 	*/
@@ -25,14 +27,12 @@ class Converter implements ItemConverterInterface {
 	
 	/**
 	* Process values
-	*
 	* Apply value modification according to processors (rules)
 	*
-	* @param array $item = 
-	* @return mixed Return found data
+	* @param array $item 
 	*/
-	protected function processValues ( &$item ) {
-		
+	protected function processValues(&$item)
+	{
 		foreach ($this->processors['values'] as $field => $params) {
 			
 			// params = array (multiples functions)
@@ -63,6 +63,12 @@ class Converter implements ItemConverterInterface {
 		}
 	}
 	
+	/**
+	* route
+	* Get basic fields for future redirection
+	*
+	* @param array $item 
+	*/
 	protected function route($item)
 	{
 		$route = array();
@@ -74,6 +80,12 @@ class Converter implements ItemConverterInterface {
 		return $route;
 	}
 	
+	/**
+	* Process fields
+	* Apply fields modifications according to processors (rules)
+	*
+	* @param array $item
+	*/
 	protected function processFields ( &$item, &$route ) {
 		
 		foreach ( $this->processors['fields'] as $field => $params ) {
@@ -106,6 +118,13 @@ class Converter implements ItemConverterInterface {
 		}
 	}
 	
+	/**
+	* Process route
+	* Change fields name according to $route
+	*
+	* @param array $item
+	* @param array $route
+	*/
 	protected function processRoute ( $item, $route )
 	{
 		$routedItem = array();
@@ -117,6 +136,12 @@ class Converter implements ItemConverterInterface {
 		return $routedItem;
 	}
 	
+	/**
+	* Convert
+	* Apply custom rules and processors to an item
+	*
+	* @param array $item
+	*/
 	public function convert( $item ) {
 		
 		$route = $this->route( $item );
