@@ -17,6 +17,7 @@ class JsonWriter extends AbstractStreamWriter
 	* @var boolean
 	*/
 	private $pretty = false;
+	private $convert_unicode = false;
 	
 	/**
 	* Create ce JSON_ENCODE option bitmask
@@ -29,6 +30,10 @@ class JsonWriter extends AbstractStreamWriter
 			$options |= JSON_PRETTY_PRINT;
 		}
 		
+		if ($this->convert_unicode) {
+			$options |= JSON_UNESCAPED_UNICODE;
+		}
+		
 		return $options;
 	}
 	
@@ -37,11 +42,12 @@ class JsonWriter extends AbstractStreamWriter
 	*
 	* @param boolean $pretty
 	*/
-	public function __construct($pretty = false)
+	public function __construct($pretty = false, $unicode = false)
 	{
 		parent::__construct();
 		
 		$this->pretty = $pretty;
+		$this->convert_unicode = $unicode;
 	}
 	
 	/**

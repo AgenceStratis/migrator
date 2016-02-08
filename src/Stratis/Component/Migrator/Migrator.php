@@ -49,7 +49,7 @@ class Migrator extends Workflow
 			'header' => true, 'fields' => array(), 'delimiter' => ',',
 			
 			// JSON Options
-			'pretty' => false,
+			'pretty' => false, 'convert_unicode' => false,
 			
 			// SQL Options
 			'database_type' => 'mysql', 'charset' => 'utf8', 'server' => 'localhost',
@@ -204,8 +204,9 @@ class Migrator extends Workflow
 				
 				$file = $this->getConf('dest', 'options', 'file');
 				$pretty = $this->getConf('dest', 'options', 'pretty');
+				$unicode = $this->getConf('dest', 'options', 'convert_unicode');
 				
-				$writer = new JsonWriter( $pretty );
+				$writer = new JsonWriter( $pretty, $unicode );
 				$writer->setStream(fopen($file, 'w'));
 				
 				break;
