@@ -1,5 +1,5 @@
 {
-	"name": "AgenceStratis/migrator",
+	"name": "agencestratis/migrator",
 	"type": "library",
 	"description": "Importer/Exporter for multiples data sources",
 	"homepage": "http://stratis.fr",
