@@ -44,8 +44,10 @@ class Migrator extends Workflow
 	public function __construct($file, $logger = null)
 	{
 		// init configuration data
-		$options = array('file', 'header', 'fields' => array(), 'database_type',
-			'database_name', 'server', 'username', 'password', 'charset', 'table');
+		$options = array(
+			'file', 'header', 'fields' => array(),
+			'database_type' => 'mysql', 'charset' => 'utf8', 'server' => 'localhost',
+			'database_name', 'username', 'password', 'table');
 		
 		$this->configuration = array(
 			'source' => array('type', 'options' => $options),
