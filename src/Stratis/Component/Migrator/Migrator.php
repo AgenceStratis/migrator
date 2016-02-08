@@ -44,7 +44,7 @@ class Migrator extends Workflow
 	public function __construct($file, $logger = null)
 	{
 		// init configuration data
-		$options = array('file', 'fields' => array(), 'database_type',
+		$options = array('file', 'header', 'fields' => array(), 'database_type',
 			'database_name', 'server', 'username', 'password', 'charset', 'table');
 		
 		$this->configuration = array(
@@ -125,10 +125,14 @@ class Migrator extends Workflow
 		switch ($type) {
 			
 			case 'csv': {
-				$file = $this->getConf('source', 'options', 'file');
+				$file 	= $this->getConf('source', 'options', 'file');
 				$source = new \SplFileObject($file);
 				$reader = new CsvReader($source);
-				$reader->setHeaderRowNumber(0);
+				
+				if ($this->getConf('source', 'options', 'header')) {
+					$reader->setHeaderRowNumber(0);
+				}
+				
 				break;
 			}
 			
@@ -141,6 +145,10 @@ class Migrator extends Workflow
 			
 			case 'pdo': {
 				$table = $this->getConf('source', 'options', 'table');
+				if (! strlen($table)) {
+					throw new \Exception('Table is not defined');
+				}
+				
 				$db = new medoo($this->getConf('source', 'options'));
 				$reader = new PdoReader($db->pdo, 'SELECT * FROM ' . $table);
 				break;
@@ -164,13 +172,13 @@ class Migrator extends Workflow
 		switch ($type) {
 			
 			case 'csv': {
-				$file = $this->getConf('dest', 'options', 'file');
-				$header = $this->getConf('dest', 'options', 'fields');
+				$file 	= $this->getConf('dest', 'options', 'file');
 				$writer = new CsvWriter();
 				$writer->setStream(fopen($file, 'w'));
 				
+				$header = $this->getConf('dest', 'options', 'fields');
 				if (count($header)) {
-					$writer->writeItem( $header );
+					$writer->writeItem($header);
 				}
 				
 				break;
