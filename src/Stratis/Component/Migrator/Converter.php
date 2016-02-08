@@ -1,7 +1,6 @@
 <?php
 
 //TODO: remove references usage
-//TODO: implements rulesValues and rulesFields
 
 namespace Stratis\Component\Migrator;
 use Ddeboer\DataImport\ItemConverter\ItemConverterInterface;
@@ -17,9 +16,6 @@ class Converter implements ItemConverterInterface
 {
 	protected $configuration = array();
 	protected $processors = array();
-	
-	// rulesValues = array('round', 'toInteger')...
-	// rulesFields = array('upperCase', 'lowerCase')...
 	
 	/**
 	* Constructor
