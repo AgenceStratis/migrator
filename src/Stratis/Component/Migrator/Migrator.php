@@ -5,7 +5,6 @@ namespace Stratis\Component\Migrator;
 use medoo;
 use Symfony\Component\Yaml\Yaml;
 use Ddeboer\DataImport\Workflow;
-use Ddeboer\DataImport\ItemConverter\CallbackItemConverter;
 
 // Readers
 use Ddeboer\DataImport\Reader\CsvReader;
@@ -45,13 +44,13 @@ class Migrator extends Workflow
 	{
 		// init configuration data
 		$options = array(
-			'file', 'header', 'fields' => array(),
+			'file' => '', 'header' => '', 'fields' => array(),
 			'database_type' => 'mysql', 'charset' => 'utf8', 'server' => 'localhost',
-			'database_name', 'username', 'password', 'table');
+			'database_name' => '', 'username' => '', 'password' => '', 'table' => '');
 		
 		$this->configuration = array(
-			'source' => array('type', 'options' => $options),
-			'dest' => array('type', 'options' => $options),
+			'source' => array('type' => '', 'options' => $options),
+			'dest' => array('type' => '', 'options' => $options),
 			'processors' => array('values' => array(), 'fields' => array()));
 		
 		// add custom config file
@@ -86,7 +85,9 @@ class Migrator extends Workflow
 		}
 		
 		$conf = Yaml::parse(file_get_contents($file));
-		$this->configuration = array_merge($this->configuration, $conf);
+		$this->configuration = array_merge_recursive_distinct(
+			$this->configuration, $conf
+		);
 	}
 	
 	/**
