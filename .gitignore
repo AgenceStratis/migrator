@@ -6,3 +6,4 @@ examples/migrator/result.csv
 examples/migrator/result.json
 migrator.log
 /.vscode
+cli.php
