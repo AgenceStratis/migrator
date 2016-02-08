@@ -6,9 +6,9 @@ Usage
 ---------
 
 ```php
-use Stratis\Migrator\Migrator;
+use Stratis\Component\Migrator\Migrator;
 
-$migrator = new Migrator( 'config.yaml' );
+$migrator = new Migrator('config.yml');
 $migrator->process();
 ```
 
