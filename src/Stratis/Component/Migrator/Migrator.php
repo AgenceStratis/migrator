@@ -42,10 +42,16 @@ class Migrator extends Workflow
 	*/
 	public function __construct($file, $logger = null)
 	{
-		// init configuration data
 		$options = array(
 			'file' => '',
+			
+			 // CSV Options
 			'header' => true, 'fields' => array(), 'delimiter' => ',',
+			
+			// JSON Options
+			'pretty' => false,
+			
+			// SQL Options
 			'database_type' => 'mysql', 'charset' => 'utf8', 'server' => 'localhost',
 			'database_name' => '', 'username' => '', 'password' => '', 'table' => '');
 		
@@ -195,9 +201,13 @@ class Migrator extends Workflow
 			}
 			
 			case 'json': {
+				
 				$file = $this->getConf('dest', 'options', 'file');
-				$writer = new JsonWriter();
+				$pretty = $this->getConf('dest', 'options', 'pretty');
+				
+				$writer = new JsonWriter( $pretty );
 				$writer->setStream(fopen($file, 'w'));
+				
 				break;
 			}
 			
