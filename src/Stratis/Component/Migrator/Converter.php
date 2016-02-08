@@ -6,24 +6,46 @@
 namespace Stratis\Component\Migrator;
 use Ddeboer\DataImport\ItemConverter\ItemConverterInterface;
 
+use Stratis\Component\Migrator\Processor;
+use Stratis\Component\Migrator\Processor\IntegerProcessor;
+use Stratis\Component\Migrator\Processor\UpperCaseProcessor;
+
 /**
 * ItemConverter for Migrator
 */
-class Converter implements ItemConverterInterface {
-	
+class Converter implements ItemConverterInterface
+{
+	protected $configuration = array();
 	protected $processors = array();
 	
 	// rulesValues = array('round', 'toInteger')...
 	// rulesFields = array('upperCase', 'lowerCase')...
-		
+	
 	/**
 	* Constructor
 	*
-	* @param array $processors Parameters from Migrator Config
+	* @param array $configuration
 	*/
-	public function __construct ($processors)
+	public function __construct($configuration)
 	{
-		$this->processors = $processors;
+		$this->configuration = $configuration;
+		
+		$this->processors = array(
+			'toInteger' => new IntegerProcessor(ON_VALUES),
+			'upperCase' => new UpperCaseProcessor(ON_VALUES | ON_FIELDS)
+		);
+	}
+	
+	/**
+	* Set up a new processor
+	* Can override basic functions such as "upperCase"
+	*
+	* @param string $key
+	* @param object $processor
+	*/
+	public function set(string $key, object $processor)
+	{
+		$this->processors[$key] = $processor;
 	}
 	
 	/**
@@ -34,31 +56,25 @@ class Converter implements ItemConverterInterface {
 	*/
 	protected function processValues(&$item)
 	{
-		foreach ($this->processors['values'] as $field => $params) {
+		foreach ($this->configuration['values'] as $field => $params) {
 			
-			// params = array (multiples functions)
-			if (is_array($params) && count($params) > 0) {
+			// An array of key has been given
+			if (is_array($params) && count($params)) {
 				
 				$value = $item[$field];
-			
-				if (in_array('upperCase', $params)) {
-					$value = strtoupper($value);
-				}
-			
-				if (in_array('stripTags', $params)) {
-					$value = strip_tags($value);
-				}
-			
-				if (in_array('round', $params)) {
-					$value = $value | 0;
+				
+				// Search for matching processors
+				foreach ($params as $k) {
+					if (array_key_exists($k, $this->processors)) {
+						$value = $this->processors[$k]->exec($value);
+					}
 				}
 				
 				$item[$field] = $value;
 			}
 			
-			// params = string (assign data)
-			if (is_string($params)) {
-				
+			// Assign data to this value
+			if (! is_array($params) && ! is_object($params)) {
 				$item[$field] = $params;
 			}
 		}
@@ -89,25 +105,21 @@ class Converter implements ItemConverterInterface {
 	*/
 	protected function processFields (&$item, &$route)
 	{
-		foreach ($this->processors['fields'] as $field => $params) {
+		foreach ($this->configuration['fields'] as $field => $params) {
 			
 			// params = array (multiples functions)
 			if (is_array($params) && count($params) > 0) {
 				
 				$newKey = $field;
 				
-				if (in_array('lowerCase', $params)) {
-					$newKey = strtolower($newKey);
+				// Search for matching processors
+				foreach ($params as $k) {
+					if (array_key_exists($k, $this->processors)) {
+						$newKey = $this->processors[$k]->exec($newKey);
+					}
 				}
 				
-				if (in_array('upperCase', $params)) {
-					$newKey = strtoupper($newKey);
-				}
-			
-				if (in_array('stripTags', $params)) {
-					$newKey = strip_tags($newKey);
-				}
-				
+				// Replace old key by the new one
 				$item[$newKey] = $item[$field];
 				unset($item[$field]);
 			}
