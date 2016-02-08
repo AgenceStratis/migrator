@@ -14,9 +14,7 @@
 		"ddeboer/data-import": "@stable",
 		"psr/log": "^1.0",
 		"symfony/yaml": "^3.0",
-		"monolog/monolog": "^1.17",
-		"catfan/Medoo": "^1.0",
-		"symfony/console": "^3.0"
+		"catfan/Medoo": "^1.0"
 	},
 	"autoload": {
 		"psr-4": { "": "src/" },
