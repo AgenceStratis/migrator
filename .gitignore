@@ -1,5 +1,6 @@
 vendor/
 .vscode/
+btest.yml
 examples/migrator/result*
 composer.lock
 migrator.log
