@@ -1,6 +1,7 @@
 source:
   type: csv
   options:
+    header: true
     file: examples/migrator/source.csv
 
 dest:
