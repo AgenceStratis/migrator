@@ -34,6 +34,7 @@ source/dest:
   type: json
   options:
     file: examples/processor/data.json
+    pretty: true
 ```
 
 * SQL Database
