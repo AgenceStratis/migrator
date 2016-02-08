@@ -25,6 +25,7 @@ source/dest:
     file: examples/processor/data.csv
     header: true
     fields: [ ... ]
+    delimiter: ","
 ```
 
 * JSON file

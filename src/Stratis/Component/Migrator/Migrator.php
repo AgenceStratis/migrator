@@ -44,7 +44,8 @@ class Migrator extends Workflow
 	{
 		// init configuration data
 		$options = array(
-			'file' => '', 'header' => '', 'fields' => array(),
+			'file' => '',
+			'header' => true, 'fields' => array(), 'delimiter' => ',',
 			'database_type' => 'mysql', 'charset' => 'utf8', 'server' => 'localhost',
 			'database_name' => '', 'username' => '', 'password' => '', 'table' => '');
 		
@@ -128,9 +129,13 @@ class Migrator extends Workflow
 		switch ($type) {
 			
 			case 'csv': {
+				
+				$delimiter = $this->getConf('source', 'options', 'delimiter');
+				
 				$file 	= $this->getConf('source', 'options', 'file');
 				$source = new \SplFileObject($file);
-				$reader = new CsvReader($source);
+				
+				$reader = new CsvReader($source, $delimiter);
 				
 				if ($this->getConf('source', 'options', 'header')) {
 					$reader->setHeaderRowNumber(0);
@@ -146,7 +151,7 @@ class Migrator extends Workflow
 				break;
 			}
 			
-			case 'pdo': {
+			case 'sql': {
 				$table = $this->getConf('source', 'options', 'table');
 				if (! strlen($table)) {
 					throw new \Exception('Table is not defined');
