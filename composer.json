@@ -2,8 +2,8 @@
 	"name": "stratis/migrator",
 	"type": "library",
 	"description": "Importer/Exporter for multiples data sources",
-    "homepage": "http://stratis.fr",
-    "license": "MIT",
+	"homepage": "http://stratis.fr",
+	"license": "MIT",
 	"authors": [
 		{
 			"name": "Emmanuel Vodor",
