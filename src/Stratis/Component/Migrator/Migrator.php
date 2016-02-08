@@ -131,10 +131,9 @@ class Migrator extends Workflow
 			case 'csv': {
 				
 				$delimiter = $this->getConf('source', 'options', 'delimiter');
+				$file = $this->getConf('source', 'options', 'file');
 				
-				$file 	= $this->getConf('source', 'options', 'file');
 				$source = new \SplFileObject($file);
-				
 				$reader = new CsvReader($source, $delimiter);
 				
 				if ($this->getConf('source', 'options', 'header')) {
@@ -180,8 +179,11 @@ class Migrator extends Workflow
 		switch ($type) {
 			
 			case 'csv': {
-				$file 	= $this->getConf('dest', 'options', 'file');
-				$writer = new CsvWriter();
+				
+				$delimiter = $this->getConf('dest', 'options', 'delimiter');
+				$file = $this->getConf('dest', 'options', 'file');
+				
+				$writer = new CsvWriter( $delimiter );
 				$writer->setStream(fopen($file, 'w'));
 				
 				$header = $this->getConf('dest', 'options', 'fields');
