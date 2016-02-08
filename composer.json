@@ -18,6 +18,6 @@
 	},
 	"autoload": {
 		"psr-4": { "Stratis\\Component\\Migrator\\": "" },
-		"files": [ "Utils/Stratis/Utils/array_merge_recursive_distinct.php" ]
+		"files": [ "/Utils/Stratis/Utils/array_merge_recursive_distinct.php" ]
 	}
 }
