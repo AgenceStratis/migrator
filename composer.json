@@ -17,7 +17,14 @@
 		"catfan/Medoo": "^1.0"
 	},
 	"autoload": {
-		"psr-4": { "Stratis\\Component\\Migrator\\": "" },
-		"files": [ "Utils/array_merge_recursive_distinct.php" ]
+		"psr-4": {
+			"Stratis\\Component\\Migrator\\": ""
+		},
+		"exclude-from-classmap": [
+			"/examples/"
+		],
+		"files": [
+			"Utils/array_merge_recursive_distinct.php"
+		]
 	}
 }
