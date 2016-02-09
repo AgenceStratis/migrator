@@ -43,6 +43,8 @@ class Migrator extends Workflow
 		$options = array(
 			
 			'file' => '',
+			'offset' => 0,
+			'count' => 0,
 			
 			 // CSV Options
 			'header' => true,
