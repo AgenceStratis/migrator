@@ -250,9 +250,9 @@ class Migrator extends Workflow
 			
 			case 'cli': {
 				
-				$writer = new CallbackWriter(function($row)
+				$writer = new CallbackWriter(function($item)
 				{
-					var_dump($row);
+					var_dump($item);
 				});
 				
 				break;
