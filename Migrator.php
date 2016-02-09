@@ -46,7 +46,7 @@ class Migrator extends Workflow
 			'file' => '',
 			
 			 // CSV Options
-			'header' => true, 'fields' => array(), 'delimiter' => ',',
+			'header' => true, 'fields' => array(), 'delimiter' => ',', 'enclosure' => '"', 'utf8' => false,
 			
 			// JSON Options
 			'pretty' => false, 'convert_unicode' => false,
@@ -70,12 +70,7 @@ class Migrator extends Workflow
 		$writer = $this->getWriter();
 		
 		// init workflow
-		if ($logger !== null) {
-			parent::__construct($reader, $logger);
-		} else {
-			parent::__construct($reader);
-		}
-		
+		parent::__construct($reader, $logger);
 		$this->addWriter($writer);
 		
 		$converter = new Converter($this->getConf('processors'));
@@ -138,13 +133,16 @@ class Migrator extends Workflow
 			
 			case 'csv': {
 				
-				$delimiter = $this->getConf('source', 'options', 'delimiter');
-				$file = $this->getConf('source', 'options', 'file');
+				$delimiter 	= $this->getConf('source', 'options', 'delimiter');
+				$file 		= $this->getConf('source', 'options', 'file');
+				$header 	= $this->getConf('source', 'options', 'header');
 				
-				$source = new \SplFileObject($file);
-				$reader = new CsvReader($source, $delimiter);
+				$reader = new CsvReader(
+					new \SplFileObject($file),
+					$delimiter
+				);
 				
-				if ($this->getConf('source', 'options', 'header')) {
+				if ($header) {
 					$reader->setHeaderRowNumber(0);
 				}
 				
@@ -152,26 +150,33 @@ class Migrator extends Workflow
 			}
 			
 			case 'json': {
-				$file = $this->getConf('source', 'options', 'file');
-				$source = new \SplFileObject($file);
-				$reader = new JsonReader($source);
+				
+				$file 	= $this->getConf('source', 'options', 'file');
+				
+				$reader = new JsonReader(
+					new \SplFileObject($file)
+				);
+				
 				break;
 			}
 			
 			case 'sql': {
 				
-				$table = $this->getConf('source', 'options', 'table');
-				if (! strlen($table)) {
+				$options 	= $this->getConf('source', 'options');
+				$table 		= $this->getConf('source', 'options', 'table');
+				$query 		= $this->getConf('source', 'options', 'query');
+				
+				if (strlen($table) == 0) {
 					throw new \Exception('Table is not defined');
 				}
 				
-				$query = $this->getConf('source', 'options', 'query');
 				if (strlen($query) == 0) {
 					$query = 'SELECT * FROM ' . $table;
 				}
 				
-				$db = new medoo($this->getConf('source', 'options'));
+				$db 	= new medoo($options);
 				$reader = new PdoReader($db->pdo, $query);
+				
 				break;
 			}
 			
@@ -194,36 +199,43 @@ class Migrator extends Workflow
 			
 			case 'csv': {
 				
-				$delimiter = $this->getConf('dest', 'options', 'delimiter');
-				$file = $this->getConf('dest', 'options', 'file');
+				$delimiter 	= $this->getConf('dest', 'options', 'delimiter');
+				$enclosure 	= $this->getConf('dest', 'options', 'enclosure');
+				$file 		= $this->getConf('dest', 'options', 'file');
+				$utf8 		= $this->getConf('dest', 'options', 'utf8');
+				$header 	= $this->getConf('dest', 'options', 'header');
 				
-				$writer = new CsvWriter( $delimiter );
-				$writer->setStream(fopen($file, 'w'));
-				
-				$header = $this->getConf('dest', 'options', 'fields');
-				if (count($header)) {
-					$writer->writeItem($header);
-				}
+				$writer = new CsvWriter(
+					$delimiter,
+					$enclosure,
+					fopen($file, 'w'),
+					$utf8,
+					true
+				);
 				
 				break;
 			}
 			
 			case 'json': {
 				
-				$file = $this->getConf('dest', 'options', 'file');
-				$pretty = $this->getConf('dest', 'options', 'pretty');
-				$unicode = $this->getConf('dest', 'options', 'convert_unicode');
+				$file 		= $this->getConf('dest', 'options', 'file');
+				$pretty 	= $this->getConf('dest', 'options', 'pretty');
+				$unicode 	= $this->getConf('dest', 'options', 'convert_unicode');
 				
-				$writer = new JsonWriter( $pretty, $unicode );
+				$writer = new JsonWriter($pretty, $unicode);
 				$writer->setStream(fopen($file, 'w'));
 				
 				break;
 			}
 			
 			case 'sql': {
-				$table = $this->getConf('dest', 'options', 'table');
-				$db = new medoo($this->getConf('dest', 'options'));
+				
+				$options 	= $this->getConf('dest', 'options');
+				$table 		= $this->getConf('dest', 'options', 'table');
+				
+				$db 	= new medoo($options);
 				$writer = new PdoWriter($db->pdo, $table);
+				
 				break;
 			}
 			
