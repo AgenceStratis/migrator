@@ -1,8 +1,5 @@
-vendor/
-.vscode/
-btest.yml
-examples/migrator/result*
-composer.lock
-migrator.log
-cli.php
-TODO
+/vendor
+/.vscode
+/composer.lock
+/TODO
+/Tests/Results/*

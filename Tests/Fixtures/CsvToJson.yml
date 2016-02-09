@@ -1,0 +1,10 @@
+source:
+  type: csv
+  options:
+    file: Tests/Fixtures/source.csv
+
+dest:
+  type: json
+  options:
+    file: Tests/Results/result.json
+    pretty: true

@@ -1,0 +1,11 @@
+source:
+  type: sql
+  options:
+    database_name: io
+    username: root
+    table: test
+
+dest:
+  type: csv
+  options:
+    file: Tests/Results/result.csv

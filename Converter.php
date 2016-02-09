@@ -45,38 +45,6 @@ class Converter implements ItemConverterInterface
 	}
 	
 	/**
-	* Process values
-	* Apply value modification according to processors (rules)
-	*
-	* @param array $item 
-	*/
-	protected function processValues(&$item)
-	{
-		foreach ($this->configuration['values'] as $field => $params) {
-			
-			// An array of key has been given
-			if (is_array($params) && count($params)) {
-				
-				$value = $item[$field];
-				
-				// Search for matching processors
-				foreach ($params as $k) {
-					if (array_key_exists($k, $this->processors)) {
-						$value = $this->processors[$k]->exec($value);
-					}
-				}
-				
-				$item[$field] = $value;
-			}
-			
-			// Assign data to this value
-			if (! is_array($params) && ! is_object($params)) {
-				$item[$field] = $params;
-			}
-		}
-	}
-	
-	/**
 	* route
 	* Get basic fields for future redirection
 	*
@@ -91,40 +59,6 @@ class Converter implements ItemConverterInterface
 		}
 		
 		return $route;
-	}
-	
-	/**
-	* Process fields
-	* Apply fields modifications according to processors (rules)
-	*
-	* @param array $item
-	*/
-	protected function processFields (&$item, &$route)
-	{
-		foreach ($this->configuration['fields'] as $field => $params) {
-			
-			// params = array (multiples functions)
-			if (is_array($params) && count($params) > 0) {
-				
-				$newKey = $field;
-				
-				// Search for matching processors
-				foreach ($params as $k) {
-					if (array_key_exists($k, $this->processors)) {
-						$newKey = $this->processors[$k]->exec($newKey);
-					}
-				}
-				
-				// Replace old key by the new one
-				$item[$newKey] = $item[$field];
-				unset($item[$field]);
-			}
-			
-			// params = string (assign data)
-			if (is_string($params) && array_key_exists($params, $item)) {
-				$route[$field] = $params;
-			}
-		}
 	}
 	
 	/**
@@ -155,9 +89,57 @@ class Converter implements ItemConverterInterface
 	{
 		$route = $this->route($item);
 		
-		$this->processValues($item);
-		$this->processFields($item, $route);
+		// Process values
+		foreach ($this->configuration['values'] as $field => $params) {
+			
+			// An array of key has been given
+			if (is_array($params) && count($params) > 0) {
+				
+				$value = $item[$field];
+				
+				// Search for matching processors
+				foreach ($params as $k) {
+					if (array_key_exists($k, $this->processors)) {
+						$value = $this->processors[$k]->exec($value);
+					}
+				}
+				
+				$item[$field] = $value;
+			}
+			
+			// Assign data to this value
+			if (! is_array($params) && ! is_object($params)) {
+				$item[$field] = $params;
+			}
+		}
 		
+		// Process field names
+		foreach ($this->configuration['fields'] as $field => $params) {
+			
+			// An array of key has been given
+			if (is_array($params) && count($params) > 0) {
+				
+				$newKey = $field;
+				
+				// Search for matching processors
+				foreach ($params as $k) {
+					if (array_key_exists($k, $this->processors)) {
+						$newKey = $this->processors[$k]->exec($newKey);
+					}
+				}
+				
+				// Replace old key by the new one
+				$item[$newKey] = $item[$field];
+				unset($item[$field]);
+			}
+			
+			// Assign new name to this field
+			if (is_string($params) && array_key_exists($params, $item)) {
+				$route[$field] = $params;
+			}
+		}
+		
+		// Apply routes (fields changenames)
 		return $this->processRoute($item, $route);
 	}
 }
