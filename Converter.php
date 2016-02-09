@@ -6,6 +6,7 @@ use Ddeboer\DataImport\ItemConverter\ItemConverterInterface;
 use Stratis\Component\Migrator\Processor;
 use Stratis\Component\Migrator\Processor\IntegerProcessor;
 use Stratis\Component\Migrator\Processor\UpperCaseProcessor;
+use Stratis\Component\Migrator\Processor\SetValueProcessor;
 
 /**
 * ItemConverter for Migrator
@@ -25,19 +26,20 @@ class Converter implements ItemConverterInterface
 		$this->configuration = $configuration;
 		
 		$this->processors = array(
+			// 'set' => new SetValueProcessor(ON_VALUES | ON_FIELDS),
 			'toInteger' => new IntegerProcessor(ON_VALUES),
 			'upperCase' => new UpperCaseProcessor(ON_VALUES | ON_FIELDS)
 		);
 	}
 	
 	/**
-	* Set up a new processor
+	* Set up a (new) processor
 	* Can override basic functions such as "upperCase"
 	*
 	* @param string $key
 	* @param object $processor
 	*/
-	public function set(string $key, object $processor)
+	public function setProcessor($key, $processor)
 	{
 		$this->processors[$key] = $processor;
 	}
@@ -96,9 +98,9 @@ class Converter implements ItemConverterInterface
 				$value = $item[$field];
 				
 				// Search for matching processors
-				foreach ($params as $k) {
-					if (array_key_exists($k, $this->processors)) {
-						$value = $this->processors[$k]->exec($value);
+				foreach ($params as $paramKey => $paramValue) {
+					if (array_key_exists($paramKey, $this->processors)) {
+						$value = $this->processors[$paramKey]->exec($value, $paramValue);
 					}
 				}
 				
@@ -120,9 +122,9 @@ class Converter implements ItemConverterInterface
 				$newKey = $field;
 				
 				// Search for matching processors
-				foreach ($params as $k) {
-					if (array_key_exists($k, $this->processors)) {
-						$newKey = $this->processors[$k]->exec($newKey);
+				foreach ($params as $paramKey => $paramValue) {
+					if (array_key_exists($paramKey, $this->processors)) {
+						$value = $this->processors[$paramKey]->exec($value, $paramValue);
 					}
 				}
 				
