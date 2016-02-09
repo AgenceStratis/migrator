@@ -5,6 +5,7 @@ namespace Stratis\Component\Migrator;
 use medoo;
 use Symfony\Component\Yaml\Yaml;
 use Ddeboer\DataImport\Workflow;
+use Ddeboer\DataImport\Filter\OffsetFilter;
 
 // Readers
 use Ddeboer\DataImport\Reader\CsvReader;
@@ -42,19 +43,19 @@ class Migrator extends Workflow
 	{
 		$options = array(
 			
-			'file' => '',
-			'offset' => 0,
-			'count' => 0,
+			'file' 		=> '',
+			'offset' 	=> 0,
+			'count' 	=> null,
 			
 			 // CSV Options
-			'header' => true,
+			'header' 	=> true,
 			'delimiter' => ',',
 			'enclosure' => '"',
-			'utf8' => false,
+			'utf8' 		=> false,
 			
 			// JSON Options
-			'pretty' => false,
-			'unicode' => false,
+			'pretty' 	=> false,
+			'unicode' 	=> false,
 			
 			// SQL Options
 			'database_type' => 'mysql',
@@ -93,6 +94,14 @@ class Migrator extends Workflow
 		// init workflow
 		parent::__construct($reader, $logger);
 		$this->addWriter($writer);
+		
+		// offset + count
+		$this->addFilter(
+			new OffsetFilter(
+				$this->configuration['source']['options']['offset'],
+				$this->configuration['source']['options']['count']
+			)
+		);
 		
 		// add processors to the workflow
 		$this->addItemConverter(
