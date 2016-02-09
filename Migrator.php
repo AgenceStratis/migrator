@@ -24,9 +24,6 @@ use Stratis\Component\Migrator\Writer\JsonWriter;
 * Usage:
 * 	$migrator = new Migrator('config.yaml');
 * 	$migrator->process();
-*
-* @param string $file 
-* @param string $logger 
 */
 class Migrator extends Workflow
 {
@@ -38,7 +35,7 @@ class Migrator extends Workflow
 	* Constructor
 	*
 	* @param string $file 
-	* @param string $logger 
+	* @param object $logger 
 	*/
 	public function __construct($file, $logger = null)
 	{
@@ -101,6 +98,7 @@ class Migrator extends Workflow
 	* example: $this->getConf('source', 'options', 'file');
 	*
 	* @params multiple strings
+	* @return string $search
 	*/
 	public function getConf()
 	{
@@ -124,6 +122,8 @@ class Migrator extends Workflow
 	
 	/**
 	* Create reader object, according to config
+	*
+	* @return object $reader
 	*/
 	protected function getReader()
 	{
@@ -190,6 +190,8 @@ class Migrator extends Workflow
 	
 	/**
 	* Create writer object, according to config
+	*
+	* @return object $writer
 	*/
 	protected function getWriter()
 	{
