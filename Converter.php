@@ -4,7 +4,7 @@ namespace Stratis\Component\Migrator;
 use Ddeboer\DataImport\ItemConverter\ItemConverterInterface;
 
 use Stratis\Component\Migrator\Processor;
-use Stratis\Component\Migrator\Processor\IntegerProcessor;
+use Stratis\Component\Migrator\Processor\ConvertProcessor;
 use Stratis\Component\Migrator\Processor\UpperCaseProcessor;
 use Stratis\Component\Migrator\Processor\SetValueProcessor;
 
@@ -28,7 +28,7 @@ class Converter implements ItemConverterInterface
 		$this->processors = array(
 			'delete' 	=> new Processor(ON_FIELDS),
 			'set' 		=> new SetValueProcessor(ON_VALUES | ON_FIELDS),
-			'toInteger' => new IntegerProcessor(ON_VALUES),
+			'convert' 	=> new ConvertProcessor(ON_VALUES),
 			'upperCase' => new UpperCaseProcessor(ON_VALUES | ON_FIELDS)
 		);
 	}
