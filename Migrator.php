@@ -27,40 +27,67 @@ use Stratis\Component\Migrator\Writer\JsonWriter;
 */
 class Migrator extends Workflow
 {
+	/**
+	* @var array
+	*/
 	protected $configuration;
+	
+	/**
+	* @var Logger
+	*/
 	protected $logger;
-	protected $workflow = null;
 	
 	/**
 	* Constructor
 	*
-	* @param string $file 
+	* @param string $fileName 
 	* @param object $logger 
 	*/
-	public function __construct($file, $logger = null)
+	public function __construct($fileName, $logger = null)
 	{
 		$options = array(
+			
 			'file' => '',
 			
 			 // CSV Options
-			'header' => true, 'fields' => array(), 'delimiter' => ',', 'enclosure' => '"', 'utf8' => false,
+			'header' => true,
+			'delimiter' => ',',
+			'enclosure' => '"',
+			'utf8' => false,
 			
 			// JSON Options
-			'pretty' => false, 'convert_unicode' => false,
+			'pretty' => false,
+			'convert_unicode' => false,
 			
 			// SQL Options
-			'database_type' => 'mysql', 'charset' => 'utf8', 'server' => 'localhost',
-			'database_name' => '', 'username' => '', 'password' => '', 'table' => '',
+			'database_type' => 'mysql',
+			'charset' => 'utf8',
+			'server' => 'localhost',
+			'database_name' => '',
+			'username' => '',
+			'password' => '',
+			'table' => '',
 			'query' => ''
 		);
 		
+		$io = array(
+			'type' => '',
+			'options' => $options
+		);
+		
 		$this->configuration = array(
-			'source' => array('type' => '', 'options' => $options),
-			'dest' => array('type' => '', 'options' => $options),
-			'processors' => array('values' => array(), 'fields' => array()));
+			'source' => $io,
+			'dest' => $io,
+			'processors' => array(
+				'values' => array(),
+				'fields' => array()
+			)
+		);
+		
+		unset($options, $io);
 		
 		// add custom config file
-		$this->loadConf($file);
+		$this->loadConf($fileName);
 		
 		// create i/o parsers
 		$reader = $this->getReader();
@@ -77,15 +104,18 @@ class Migrator extends Workflow
 	/**
 	* Load configuration file
 	*
-	* @param string $file 
+	* @param string $fileName 
 	*/
-	protected function loadConf($file)
+	protected function loadConf($fileName)
 	{
-		if (! file_exists($file)) {
-			throw new \Exception('Specified config file does not exist');
+		if (! file_exists($fileName)) {
+			throw new \Exception('Configuration file does not exist');
 		}
 		
-		$conf = Yaml::parse(file_get_contents($file));
+		$conf = Yaml::parse(
+			file_get_contents($fileName)
+		);
+		
 		$this->configuration = array_merge_recursive_distinct(
 			$this->configuration, $conf
 		);
