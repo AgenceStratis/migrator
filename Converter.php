@@ -26,7 +26,8 @@ class Converter implements ItemConverterInterface
 		$this->configuration = $configuration;
 		
 		$this->processors = array(
-			// 'set' => new SetValueProcessor(ON_VALUES | ON_FIELDS),
+			'delete' 	=> new Processor(ON_FIELDS),
+			'set' 		=> new SetValueProcessor(ON_VALUES | ON_FIELDS),
 			'toInteger' => new IntegerProcessor(ON_VALUES),
 			'upperCase' => new UpperCaseProcessor(ON_VALUES | ON_FIELDS)
 		);
@@ -120,6 +121,14 @@ class Converter implements ItemConverterInterface
 			if (is_array($params) && count($params) > 0) {
 				
 				$newKey = $field;
+				
+				// remove column
+				if (array_key_exists('delete', $params)) {
+					if ($params['delete']) {
+						unset($route[$field], $item[$field]);
+						continue;
+					}
+				}
 				
 				// Search for matching processors
 				foreach ($params as $paramKey => $paramValue) {
