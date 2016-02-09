@@ -97,8 +97,12 @@ class Migrator extends Workflow
 		parent::__construct($reader, $logger);
 		$this->addWriter($writer);
 		
-		$converter = new Converter($this->getConf('processors'));
-		$this->addItemConverter($converter);
+		// add processors to the workflow
+		$this->addItemConverter(
+			new Converter(
+				$this->configuration['processors']
+			)
+		);
 	}
 	
 	/**
@@ -122,35 +126,6 @@ class Migrator extends Workflow
 	}
 	
 	/**
-	* Get configuration
-	* Crawl $configuration and get a specific conf value
-	*
-	* example: $this->getConf('source', 'options', 'file');
-	*
-	* @params multiple strings
-	* @return string $search
-	*/
-	public function getConf()
-	{
-		if (func_num_args() == 0) {
-			return $this->configuration;
-		}
-		
-		$search = $this->configuration;
-		
-		foreach (func_get_args() as $arg) {
-			if (array_key_exists($arg, $search)) {
-				$search = $search[ $arg ];
-			} else {
-				$search = null;
-				break;
-			}
-		}
-		
-		return $search;
-	}
-	
-	/**
 	* Get Reader
 	* Create a reader object, according to local config
 	*
@@ -158,15 +133,16 @@ class Migrator extends Workflow
 	*/
 	protected function getReader()
 	{
-		$type = $this->getConf('source', 'type');
+		$type 		= $this->configuration['source']['type'];
+		$options 	= $this->configuration['source']['options'];
 		
 		switch ($type) {
 			
 			case 'csv': {
 				
-				$delimiter 	= $this->getConf('source', 'options', 'delimiter');
-				$file 		= $this->getConf('source', 'options', 'file');
-				$header 	= $this->getConf('source', 'options', 'header');
+				$delimiter 	= $options['delimiter'];
+				$file 		= $options['file'];
+				$header 	= $options['header'];
 				
 				$reader = new CsvReader(
 					new \SplFileObject($file),
@@ -182,7 +158,7 @@ class Migrator extends Workflow
 			
 			case 'json': {
 				
-				$file 	= $this->getConf('source', 'options', 'file');
+				$file 	= $options['file'];
 				
 				$reader = new JsonReader(
 					new \SplFileObject($file)
@@ -193,9 +169,8 @@ class Migrator extends Workflow
 			
 			case 'sql': {
 				
-				$options 	= $this->getConf('source', 'options');
-				$table 		= $this->getConf('source', 'options', 'table');
-				$query 		= $this->getConf('source', 'options', 'query');
+				$table 	= $options['table'];
+				$query 	= $options['query'];
 				
 				if (strlen($table) == 0) {
 					throw new \Exception('Table is not defined');
@@ -227,17 +202,18 @@ class Migrator extends Workflow
 	*/
 	protected function getWriter()
 	{
-		$type = $this->getConf('dest', 'type');
+		$type 		= $this->configuration['dest']['type'];
+		$options 	= $this->configuration['dest']['options'];
 		
 		switch ($type) {
 			
 			case 'csv': {
 				
-				$delimiter 	= $this->getConf('dest', 'options', 'delimiter');
-				$enclosure 	= $this->getConf('dest', 'options', 'enclosure');
-				$file 		= $this->getConf('dest', 'options', 'file');
-				$utf8 		= $this->getConf('dest', 'options', 'utf8');
-				$header 	= $this->getConf('dest', 'options', 'header');
+				$delimiter 	= $options['delimiter'];
+				$enclosure 	= $options['enclosure'];
+				$file 		= $options['file'];
+				$utf8 		= $options['utf8'];
+				$header 	= $options['header'];
 				
 				$writer = new CsvWriter(
 					$delimiter,
@@ -252,9 +228,9 @@ class Migrator extends Workflow
 			
 			case 'json': {
 				
-				$file 		= $this->getConf('dest', 'options', 'file');
-				$pretty 	= $this->getConf('dest', 'options', 'pretty');
-				$unicode 	= $this->getConf('dest', 'options', 'convert_unicode');
+				$file 		= $options['file'];
+				$pretty 	= $options['pretty'];
+				$unicode 	= $options['convert_unicode'];
 				
 				$writer = new JsonWriter($pretty, $unicode);
 				$writer->setStream(fopen($file, 'w'));
@@ -264,8 +240,7 @@ class Migrator extends Workflow
 			
 			case 'sql': {
 				
-				$options 	= $this->getConf('dest', 'options');
-				$table 		= $this->getConf('dest', 'options', 'table');
+				$table 	= $options['table'];
 				
 				$db 	= new medoo($options);
 				$writer = new PdoWriter($db->pdo, $table);
@@ -273,11 +248,18 @@ class Migrator extends Workflow
 				break;
 			}
 			
-			default: {
-				// throw new \Exception('Writer is not defined');
-				$writer = new CallbackWriter(function($row) {
+			case 'cli': {
+				
+				$writer = new CallbackWriter(function($row)
+				{
 					var_dump($row);
 				});
+				
+				break;
+			}
+			
+			default: {
+				throw new \Exception('Writer is not defined');
 			}
 		}
 		
