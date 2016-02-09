@@ -33,11 +33,6 @@ class Migrator extends Workflow
 	protected $configuration;
 	
 	/**
-	* @var Logger
-	*/
-	protected $logger;
-	
-	/**
 	* Constructor
 	*
 	* @param string $fileName 
@@ -57,7 +52,7 @@ class Migrator extends Workflow
 			
 			// JSON Options
 			'pretty' => false,
-			'convert_unicode' => false,
+			'unicode' => false,
 			
 			// SQL Options
 			'database_type' => 'mysql',
@@ -230,7 +225,7 @@ class Migrator extends Workflow
 				
 				$file 		= $options['file'];
 				$pretty 	= $options['pretty'];
-				$unicode 	= $options['convert_unicode'];
+				$unicode 	= $options['unicode'];
 				
 				$writer = new JsonWriter(
 					fopen($file, 'w'),

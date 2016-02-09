@@ -14,10 +14,16 @@ class JsonWriter extends AbstractStreamWriter
 	private $count = 0;
 	
 	/**
+	* JSON ouput will be formated
 	* @var boolean
 	*/
 	private $pretty = false;
-	private $convert_unicode = false;
+	
+	/**
+	* Auto conversion to unicode characters
+	* @var boolean
+	*/
+	private $unicode = false;
 	
 	/**
 	* Create ce JSON_ENCODE option bitmask
@@ -30,7 +36,7 @@ class JsonWriter extends AbstractStreamWriter
 			$options |= JSON_PRETTY_PRINT;
 		}
 		
-		if ($this->convert_unicode) {
+		if (! $this->unicode) {
 			$options |= JSON_UNESCAPED_UNICODE;
 		}
 		
@@ -49,7 +55,7 @@ class JsonWriter extends AbstractStreamWriter
 		parent::__construct($stream);
 		
 		$this->pretty = $pretty;
-		$this->convert_unicode = $unicode;
+		$this->unicode = $unicode;
 	}
 	
 	/**
