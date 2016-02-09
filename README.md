@@ -52,18 +52,29 @@ source/dest:
     table: test
 ```
 
-Additionnal functions and utilites can be added via processors:
+Additionnal functions and utilites can be added via processors
+Note: Some processors are only availables for Values or Fields
 
-* Value processor
+* Processor
+```yaml
+processors:
+  fields/values:
+    fieldName:
+      processorName: arg
+```
+
+* Example
 ```yaml
 processors:
   values:
-    - ?: [ ... ]
-```
-
-* Field processor
-```yaml
-processors:
+    uid:
+      mathAdd: 20
+    title:
+      subStr: [0, 20]
+    price:
+      mathMult: 1.5
+      toInteger:
+      mathAdd: 10
   fields:
-    - ?: [ ... ]
+  
 ```
