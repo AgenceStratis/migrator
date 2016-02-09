@@ -120,7 +120,7 @@ class Converter implements ItemConverterInterface
 			// An array of key has been given
 			if (is_array($params) && count($params) > 0) {
 				
-				$newKey = $field;
+				$newField = $field;
 				
 				// remove column
 				if (array_key_exists('delete', $params)) {
@@ -138,12 +138,14 @@ class Converter implements ItemConverterInterface
 				}
 				
 				// Replace old key by the new one
-				$item[$newKey] = $item[$field];
-				unset($item[$field]);
+				if ($newField !== $field) {
+					$item[$newField] = $item[$field];
+					unset($item[$field]);
+				}
 			}
 			
 			// Assign new name to this field
-			if (is_string($params) && array_key_exists($params, $item)) {
+			if (! is_array($params) && ! is_object($params)) {
 				$route[$field] = $params;
 			}
 		}
