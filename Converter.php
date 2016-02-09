@@ -1,7 +1,5 @@
 <?php
 
-//TODO: remove references usage
-
 namespace Stratis\Component\Migrator;
 use Ddeboer\DataImport\ItemConverter\ItemConverterInterface;
 
@@ -45,7 +43,7 @@ class Converter implements ItemConverterInterface
 	}
 	
 	/**
-	* route
+	* Route
 	* Get basic fields for future redirection
 	*
 	* @param array $item 

@@ -7,7 +7,7 @@ define('ON_FIELDS', 2);
 
 class Processor
 {
-	/*
+	/**
 	* @var boolean
 	*/
 	protected $onValues = false;

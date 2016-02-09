@@ -93,8 +93,8 @@ class Migrator extends Workflow
 	
 	/**
 	* Get configuration
-	*
 	* Crawl $configuration and get a specific conf value
+	*
 	* example: $this->getConf('source', 'options', 'file');
 	*
 	* @params multiple strings
@@ -121,7 +121,8 @@ class Migrator extends Workflow
 	}
 	
 	/**
-	* Create reader object, according to config
+	* Get Reader
+	* Create a reader object, according to local config
 	*
 	* @return object $reader
 	*/
@@ -189,7 +190,8 @@ class Migrator extends Workflow
 	}
 	
 	/**
-	* Create writer object, according to config
+	* Get Writer
+	* Create a writer object, according to local config
 	*
 	* @return object $writer
 	*/
