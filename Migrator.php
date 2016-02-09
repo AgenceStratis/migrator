@@ -53,7 +53,9 @@ class Migrator extends Workflow
 			
 			// SQL Options
 			'database_type' => 'mysql', 'charset' => 'utf8', 'server' => 'localhost',
-			'database_name' => '', 'username' => '', 'password' => '', 'table' => '');
+			'database_name' => '', 'username' => '', 'password' => '', 'table' => '',
+			'query' => ''
+		);
 		
 		$this->configuration = array(
 			'source' => array('type' => '', 'options' => $options),
@@ -157,13 +159,19 @@ class Migrator extends Workflow
 			}
 			
 			case 'sql': {
+				
 				$table = $this->getConf('source', 'options', 'table');
 				if (! strlen($table)) {
 					throw new \Exception('Table is not defined');
 				}
 				
+				$query = $this->getConf('source', 'options', 'query');
+				if (strlen($query) == 0) {
+					$query = 'SELECT * FROM ' . $table;
+				}
+				
 				$db = new medoo($this->getConf('source', 'options'));
-				$reader = new PdoReader($db->pdo, 'SELECT * FROM ' . $table);
+				$reader = new PdoReader($db->pdo, $query);
 				break;
 			}
 			
