@@ -232,8 +232,11 @@ class Migrator extends Workflow
 				$pretty 	= $options['pretty'];
 				$unicode 	= $options['convert_unicode'];
 				
-				$writer = new JsonWriter($pretty, $unicode);
-				$writer->setStream(fopen($file, 'w'));
+				$writer = new JsonWriter(
+					fopen($file, 'w'),
+					$pretty,
+					$unicode
+				);
 				
 				break;
 			}

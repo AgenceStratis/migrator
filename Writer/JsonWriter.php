@@ -40,11 +40,13 @@ class JsonWriter extends AbstractStreamWriter
 	/**
 	* Constructor
 	*
+	* @param object $stream
 	* @param boolean $pretty
+	* @param boolean $unicode
 	*/
-	public function __construct($pretty = false, $unicode = false)
+	public function __construct($stream = null, $pretty = false, $unicode = false)
 	{
-		parent::__construct();
+		parent::__construct($stream);
 		
 		$this->pretty = $pretty;
 		$this->convert_unicode = $unicode;
@@ -69,7 +71,10 @@ class JsonWriter extends AbstractStreamWriter
 			fwrite($this->getStream(), ",\n");
 		}
 		
-		fwrite($this->getStream(), json_encode($item, $this->options()));
+		fwrite(
+			$this->getStream(),
+			json_encode($item, $this->options())
+		);
 	}
 	
 	/**
