@@ -14,8 +14,8 @@ use Stratis\Component\Migrator\Reader\JsonReader;
 
 // Writers
 use Ddeboer\DataImport\Writer\CsvWriter;
-use Ddeboer\DataImport\Writer\PdoWriter;
 use Ddeboer\DataImport\Writer\CallbackWriter;
+use Stratis\Component\Migrator\Writer\PdoWriter;
 use Stratis\Component\Migrator\Writer\JsonWriter;
 use Stratis\Component\Migrator\Writer\Typo3MMWriter;
 
@@ -67,6 +67,7 @@ class Migrator extends Workflow
 			'password' => '',
 			'table' => '',
 			'query' => '',
+			'insert_mode' => 'insert',
 			
 			// Typo3 MM
 			'mm_tables' => array()
@@ -253,10 +254,15 @@ class Migrator extends Workflow
 			
 			case 'sql': {
 				
-				$table 	= $options['table'];
+				$table 		= $options['table'];
+				$insertMode = $options['insert_mode'];
 				
 				$db 	= new medoo($options);
-				$writer = new PdoWriter($db->pdo, $table);
+				$writer = new PdoWriter(
+					$db->pdo,
+					$table,
+					$insertMode
+				);
 				
 				break;
 			}
@@ -264,11 +270,13 @@ class Migrator extends Workflow
 			case 'typo3mm': {
 				
 				$mmTables 	= $options['mm_tables'];
+				$insertMode = $options['insert_mode'];
 				
 				$db 	= new medoo($options);
 				$writer = new Typo3MMWriter(
 					$db->pdo,
-					$mmTables
+					$mmTables,
+					$insertMode
 				);
 				
 				break;

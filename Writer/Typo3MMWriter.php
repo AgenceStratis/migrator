@@ -1,10 +1,9 @@
 <?php
 
 namespace Stratis\Component\Migrator\Writer;
-use Ddeboer\DataImport\Writer\PdoWriter;
+use Stratis\Component\Migrator\Writer\PdoWriter;
 use Ddeboer\DataImport\Exception\WriterException;
 
-// TODO: create an extended PdoWriter
 // TODO: insert unique values
 class Typo3MMWriter extends PdoWriter
 {
@@ -17,9 +16,9 @@ class Typo3MMWriter extends PdoWriter
 	* @param \PDO   $pdo
 	* @param array 	$mmTables
 	*/
-	public function __construct(\PDO $pdo, $mmTables)
+	public function __construct(\PDO $pdo, $mmTables, $insertMode)
 	{
-		parent::__construct($pdo, null);
+		parent::__construct($pdo, null, $insertMode);
 		$this->mmTables = $mmTables;
 	}
 	
