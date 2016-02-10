@@ -112,7 +112,7 @@ class Converter implements ItemConverterInterface
 			}
 			
 			// Assign data to this value
-			if (! is_array($params) && ! is_object($params)) {
+			if ((is_string($params) && strlen($params) > 0) || is_numeric($params)) {
 				$item[$field] = $params;
 			}
 		}
@@ -148,7 +148,7 @@ class Converter implements ItemConverterInterface
 			}
 			
 			// Assign new name to this field
-			if (! is_array($params) && ! is_object($params)) {
+			if ((is_string($params) && strlen($params) > 0) || is_numeric($params)) {
 				$route[$field] = $params;
 			}
 		}
