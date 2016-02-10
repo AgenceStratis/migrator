@@ -4,7 +4,7 @@ namespace Stratis\Component\Migrator\Writer;
 use Ddeboer\DataImport\Writer;
 use Ddeboer\DataImport\Exception\WriterException;
 
-
+// TODO: test if statement need to be refreshed (ex: Typo3MM)
 class PdoWriter extends \Ddeboer\DataImport\Writer\PdoWriter
 {
 	/**
@@ -58,8 +58,8 @@ class PdoWriter extends \Ddeboer\DataImport\Writer\PdoWriter
 	{
 		try {
 			
-			//prepare the statment as soon as we know how many values there are
-			if (! $this->statement) {
+			// prepare the statment as soon as we know how many values there are
+			// if (! $this->statement) {
 				
 				$this->statement = $this->pdo->prepare(
 					$this->createStatement($item)
@@ -69,7 +69,7 @@ class PdoWriter extends \Ddeboer\DataImport\Writer\PdoWriter
 				if (! $this->statement) {
 					throw new WriterException('Failed to prepare write statement for item: ' . implode(',', $item));
 				}
-			}
+			// }
 
 			//do the insert
 			if (!$this->statement->execute(array_values($item))) {
@@ -81,7 +81,5 @@ class PdoWriter extends \Ddeboer\DataImport\Writer\PdoWriter
 			//convert exception so the abstracton doesn't leak
 			throw new WriterException('Write failed ('.$e->getMessage().').', null, $e);
 		}
-
-		return $this;
 	}
 }
