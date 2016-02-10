@@ -42,7 +42,8 @@ class Typo3MMWriter extends PdoWriter
 				// insert mm record
 				parent::writeItem(array(
 					'uid_local' 	=> $item['uid'],
-					'uid_foreign' 	=> $item[$uidKey]
+					'uid_foreign' 	=> $item[$uidKey],
+					'sorting' 		=> 1
 				));
 			}
 		}
