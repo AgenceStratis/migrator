@@ -48,6 +48,7 @@ class Converter implements ItemConverterInterface
 	/**
 	* Route
 	* Get basic fields for future redirection
+	* $route[futureKey] = actualKey
 	*
 	* @param array $item 
 	*/
@@ -74,7 +75,9 @@ class Converter implements ItemConverterInterface
 		$routedItem = array();
 		
 		foreach ($route as $baseField => $targetField) {
-			$routedItem[$targetField] = $item[$baseField];
+			if (array_key_exists($targetField, $item)) {
+				$routedItem[$baseField] = $item[$targetField];
+			}
 		}
 		
 		return $routedItem;
@@ -96,16 +99,16 @@ class Converter implements ItemConverterInterface
 			// An array of key has been given
 			if (is_array($params) && count($params) > 0) {
 				
-				$value = $item[$field];
+				$newValue = $item[$field];
 				
 				// Search for matching processors
 				foreach ($params as $paramKey => $paramValue) {
 					if (array_key_exists($paramKey, $this->processors)) {
-						$value = $this->processors[$paramKey]->exec($value, $paramValue);
+						$newValue = $this->processors[$paramKey]->exec($newValue, $paramValue);
 					}
 				}
 				
-				$item[$field] = $value;
+				$item[$field] = $newValue;
 			}
 			
 			// Assign data to this value
@@ -125,7 +128,7 @@ class Converter implements ItemConverterInterface
 				// remove column
 				if (array_key_exists('delete', $params)) {
 					if ($params['delete']) {
-						unset($route[$field], $item[$field]);
+						unset($route[$field]);
 						continue;
 					}
 				}
@@ -133,14 +136,14 @@ class Converter implements ItemConverterInterface
 				// Search for matching processors
 				foreach ($params as $paramKey => $paramValue) {
 					if (array_key_exists($paramKey, $this->processors)) {
-						$value = $this->processors[$paramKey]->exec($value, $paramValue);
+						$newField = $this->processors[$paramKey]->exec($newField, $paramValue);
 					}
 				}
 				
 				// Replace old key by the new one
-				if ($newField !== $field) {
-					$item[$newField] = $item[$field];
-					unset($item[$field]);
+				if ($newField != $field) {
+					$route[$newField] = $field;
+					unset($route[$field]);
 				}
 			}
 			
