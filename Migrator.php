@@ -119,10 +119,19 @@ class Migrator extends Workflow
 	/**
 	* Load configuration file
 	*
-	* @param string $fileName 
+	* @param mixed $fileName
 	*/
 	protected function loadConf($fileName)
 	{
+		if (is_array($fileName)) {
+			
+			foreach ($fileName as $subFile) {
+				$this->loadConf($subFile);
+			}
+			
+			return;
+		}
+		
 		if (! file_exists($fileName)) {
 			throw new \Exception('Configuration file does not exist');
 		}
