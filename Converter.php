@@ -112,7 +112,7 @@ class Converter implements ItemConverterInterface
 			}
 			
 			// Assign data to this value
-			if ((is_string($params) && strlen($params) > 0) || is_numeric($params)) {
+			if ((is_string($params) && strlen($params) > 0) || is_numeric($params) || is_null($params)) {
 				$item[$field] = $params;
 			}
 		}
