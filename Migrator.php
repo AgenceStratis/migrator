@@ -79,8 +79,12 @@ class Migrator extends Workflow
 		);
 		
 		$this->configuration = array(
-			'source' => $io,
-			'dest' => $io,
+			
+			'require' 	=> array(),
+			
+			'source' 	=> $io,
+			'dest' 		=> $io,
+			
 			'processors' => array(
 				'values' => array(),
 				'fields' => array()
@@ -140,6 +144,24 @@ class Migrator extends Workflow
 			file_get_contents($fileName)
 		);
 		
+		// execute requires
+		if (array_key_exists('require', $conf)) {
+			
+			$require = $conf['require'];
+			$reqPath = dirname($fileName) . '/';
+			
+			if (is_array($require) && count($require) > 0) {
+				foreach ($require as $reqFile) {
+					$this->loadConf($reqPath . $reqFile);
+				}
+			}
+			
+			if (is_string($require) && strlen($require) > 0) {
+				$this->loadConf($reqPath . $require);
+			}
+		}
+		
+		// merge configurations
 		$this->configuration = array_merge_recursive_distinct(
 			$this->configuration, $conf
 		);
