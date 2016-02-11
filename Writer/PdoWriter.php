@@ -31,20 +31,38 @@ class PdoWriter extends \Ddeboer\DataImport\Writer\PdoWriter
 	*/
 	protected function createStatement(array $item)
 	{
-		$values = ' (' . implode(',', array_keys($item)) . ') VALUES (' . substr(str_repeat('?,', count($item)), 0, -1) . ')';
+		$keys 		= implode(',', array_keys($item));
+		$values 	= substr(str_repeat('?,', count($item)), 0, -1);
+		$statement 	= '';
 		
 		switch ($this->insertMode) {
 			
 			// insert values and reset it if primary key is matched
 			case 'replace': {
-				$statement = 'REPLACE INTO ' . $this->tableName . $values;
+				$statement = 'REPLACE INTO ' . $this->tableName . ' (' . $keys . ') VALUES (' . $values . ')';
+				break;
+			}
+			
+			// insert values if it doesn't exist
+			// useful for tables without primary key
+			case 'not_exists': {
+				
+				$where = array();
+				
+				foreach ($item as $column => $value) {
+					array_push($where, $column . '=' . $value);
+				}
+				
+				$statement = 'INSERT INTO ' . $this->tableName . ' (' . $keys . ') SELECT ' . $values
+							. ' FROM DUAL WHERE NOT EXISTS ( SELECT * FROM ' . $this->tableName
+							. ' WHERE ' . implode(' AND ', $where) . ' ) LIMIT 1';
 				break;
 			}
 			
 			// classic insert, may cause errors if primary key is specified
 			case 'insert':
 			default: {
-				$statement = 'INSERT INTO ' . $this->tableName . $values;
+				$statement = 'INSERT INTO ' . $this->tableName . ' (' . $keys . ') VALUES (' . $values . ')';
 			}
 		}
 		
