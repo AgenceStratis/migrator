@@ -7,6 +7,7 @@ use Stratis\Component\Migrator\Processor;
 use Stratis\Component\Migrator\Processor\ConvertProcessor;
 use Stratis\Component\Migrator\Processor\UpperCaseProcessor;
 use Stratis\Component\Migrator\Processor\SetValueProcessor;
+use Stratis\Component\Migrator\Processor\AddValueProcessor;
 
 /**
 * ItemConverter for Migrator
@@ -26,10 +27,14 @@ class Converter implements ItemConverterInterface
 		$this->configuration = $configuration;
 		
 		$this->processors = array(
+			
 			'delete' 	=> new Processor(ON_FIELDS),
+			
 			'set' 		=> new SetValueProcessor(ON_VALUES | ON_FIELDS),
+			'upperCase' => new UpperCaseProcessor(ON_VALUES | ON_FIELDS),
+			
 			'convert' 	=> new ConvertProcessor(ON_VALUES),
-			'upperCase' => new UpperCaseProcessor(ON_VALUES | ON_FIELDS)
+			'add' 		=> new AddValueProcessor(ON_VALUES),
 		);
 	}
 	
