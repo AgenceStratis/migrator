@@ -153,8 +153,9 @@ class Converter implements ItemConverterInterface
 			}
 			
 			// Assign new name to this field
-			if ((is_string($params) && strlen($params) > 0) || is_numeric($params)) {
-				$route[$field] = $params;
+			if (is_string($params) && strlen($params) > 0) {
+				$route[$params] = $field;
+				unset($route[$field]);
 			}
 		}
 		
