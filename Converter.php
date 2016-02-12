@@ -13,7 +13,10 @@ use Stratis\Component\Migrator\Processor\AddValueProcessor;
 * ItemConverter for Migrator
 */
 class Converter implements ItemConverterInterface
-{
+{	
+	/**
+	* @var array
+	*/
 	protected $configuration = array();
 	protected $processors = array();
 	
@@ -29,6 +32,7 @@ class Converter implements ItemConverterInterface
 		$this->processors = array(
 			
 			'delete' 	=> new Processor(ON_FIELDS),
+			'copy' 		=> new Processor(ON_VALUES),
 			
 			'set' 		=> new SetValueProcessor(ON_VALUES | ON_FIELDS),
 			'upperCase' => new UpperCaseProcessor(ON_VALUES | ON_FIELDS),
@@ -104,7 +108,22 @@ class Converter implements ItemConverterInterface
 			// An array of key has been given
 			if (is_array($params) && count($params) > 0) {
 				
+				// if it doesn't exist, create new null column
+				if (! array_key_exists($field, $item)) {
+					$item[$field] = null;
+					$route[$field] = $field;
+				}
+				
 				$newValue = $item[$field];
+				
+				// copy value from another item field
+				if (array_key_exists('copy', $params)) {
+					$copyFrom = $params['copy'];
+					if (array_key_exists($copyFrom, $item)) {
+						$item[$field] = $item[$copyFrom];
+					}
+					continue;
+				}
 				
 				// Search for matching processors
 				foreach ($params as $paramKey => $paramValue) {
@@ -134,8 +153,8 @@ class Converter implements ItemConverterInterface
 				if (array_key_exists('delete', $params)) {
 					if ($params['delete']) {
 						unset($route[$field]);
-						continue;
 					}
+					continue;
 				}
 				
 				// Search for matching processors
