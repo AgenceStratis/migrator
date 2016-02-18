@@ -1,11 +1,8 @@
 <?php
 
-namespace Stratis\Component\Migrator\Processor;
+namespace Stratis\Component\Migrator\Processor\StringValue;
 use Stratis\Component\Migrator\Processor;
 
-/**
-* Set a string on uppercase
-*/
 class UpperCaseProcessor extends Processor
 {
 	public function exec($value)

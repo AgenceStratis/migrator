@@ -4,10 +4,9 @@ namespace Stratis\Component\Migrator;
 use Ddeboer\DataImport\ItemConverter\ItemConverterInterface;
 
 use Stratis\Component\Migrator\Processor;
-use Stratis\Component\Migrator\Processor\ConvertProcessor;
-use Stratis\Component\Migrator\Processor\UpperCaseProcessor;
-use Stratis\Component\Migrator\Processor\SetValueProcessor;
-use Stratis\Component\Migrator\Processor\AddValueProcessor;
+use Stratis\Component\Migrator\Processor\ArrayValue;
+use Stratis\Component\Migrator\Processor\NumericValue;
+use Stratis\Component\Migrator\Processor\StringValue;
 
 /**
 * ItemConverter for Migrator
@@ -34,11 +33,24 @@ class Converter implements ItemConverterInterface
 			'delete' 	=> new Processor(ON_FIELDS),
 			'copy' 		=> new Processor(ON_VALUES),
 			
-			'set' 		=> new SetValueProcessor(ON_VALUES | ON_FIELDS),
-			'upperCase' => new UpperCaseProcessor(ON_VALUES | ON_FIELDS),
+			// Mixed values processors
+			'set' 		=> new Processor\SetProcessor(ON_VALUES | ON_FIELDS),
+			'convert' 	=> new Processor\ConvertProcessor(ON_VALUES),
 			
-			'convert' 	=> new ConvertProcessor(ON_VALUES),
-			'add' 		=> new AddValueProcessor(ON_VALUES),
+			// String processors
+			'split' 	=> new StringValue\SplitProcessor(ON_VALUES),
+			'upperCase' => new StringValue\UpperCaseProcessor(ON_VALUES | ON_FIELDS),
+			
+			// Numeric processors
+			'add' 		=> new NumericValue\AddProcessor(ON_VALUES),
+			'sub' 		=> new NumericValue\SubProcessor(ON_VALUES),
+			'mult' 		=> new NumericValue\MultProcessor(ON_VALUES),
+			'div' 		=> new NumericValue\DivProcessor(ON_VALUES),
+			
+			// Array processors
+			'first' 	=> new ArrayValue\FirstProcessor(ON_VALUES),
+			'join' 		=> new ArrayValue\JoinProcessor(ON_VALUES),
+			'last' 		=> new ArrayValue\LastProcessor(ON_VALUES),
 		);
 	}
 	
