@@ -18,8 +18,8 @@ use Ddeboer\DataImport\Writer\CallbackWriter;
 use Stratis\Component\Migrator\Writer\PdoWriter;
 use Stratis\Component\Migrator\Writer\JsonWriter;
 use Stratis\Component\Migrator\Writer\Typo3MMWriter;
-use Stratis\Component\Migrator\Writer\Typo3FileWriter;
 use Stratis\Component\Migrator\Writer\CopyFileWriter;
+use Stratis\Component\Migrator\Writer\Typo3FileWriter;
 
 /**
 * Stratis Migrator
@@ -77,6 +77,10 @@ class Migrator extends Workflow
 			// Copy File
 			'from' 	=> '',
 			'to' 	=> '',
+			
+			// Typo3 File
+			'root_dir' => array(),
+			'file_dir' => array(),
 		);
 		
 		$io = array(
@@ -321,11 +325,15 @@ class Migrator extends Workflow
 			
 			case 'typo3file': {
 				
+				$realDir 	= $options['real_dir'];
+				$fileDir 	= $options['file_dir'];
 				$insertMode = $options['insert_mode'];
 				
 				$db 	= new medoo($options);
 				$writer = new Typo3FileWriter(
 					$db->pdo,
+					$realDir,
+					$fileDir,
 					$insertMode
 				);
 				
