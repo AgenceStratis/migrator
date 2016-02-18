@@ -18,6 +18,7 @@ use Ddeboer\DataImport\Writer\CallbackWriter;
 use Stratis\Component\Migrator\Writer\PdoWriter;
 use Stratis\Component\Migrator\Writer\JsonWriter;
 use Stratis\Component\Migrator\Writer\Typo3MMWriter;
+use Stratis\Component\Migrator\Writer\CopyFileWriter;
 
 /**
 * Stratis Migrator
@@ -70,7 +71,11 @@ class Migrator extends Workflow
 			'insert_mode' => 'insert',
 			
 			// Typo3 MM
-			'mm_tables' => array()
+			'mm_tables' => array(),
+			
+			// Copy File
+			'from' 	=> '',
+			'to' 	=> '',
 		);
 		
 		$io = array(
@@ -308,6 +313,16 @@ class Migrator extends Workflow
 					$db->pdo,
 					$mmTables,
 					$insertMode
+				);
+				
+				break;
+			}
+			
+			case 'copyfile': {
+				
+				$writer = new CopyFileWriter(
+					$options['from'],
+					$options['to']
 				);
 				
 				break;
