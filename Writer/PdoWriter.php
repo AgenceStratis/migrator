@@ -39,7 +39,7 @@ class PdoWriter extends \Ddeboer\DataImport\Writer\PdoWriter
 			
 			// insert values and reset it if primary key is matched
 			case 'replace': {
-				$statement = 'REPLACE INTO ' . $this->tableName . ' (' . $keys . ') VALUES (' . $values . ')';
+				$statement = "REPLACE INTO " . $this->tableName . " (" . $keys . ") VALUES (" . $values . ")";
 				break;
 			}
 			
@@ -47,22 +47,24 @@ class PdoWriter extends \Ddeboer\DataImport\Writer\PdoWriter
 			// useful for tables without primary key
 			case 'not_exists': {
 				
-				$where = array();
+				$where = implode(" AND ", array_map(
+					function ($value, $key) {
+						return $key . "='" . $value . "'";
+					}, 
+					$item, 
+					array_keys($item)
+				));
 				
-				foreach ($item as $column => $value) {
-					array_push($where, $column . '=' . $value);
-				}
-				
-				$statement = 'INSERT INTO ' . $this->tableName . ' (' . $keys . ') SELECT ' . $values
-							. ' FROM DUAL WHERE NOT EXISTS ( SELECT * FROM ' . $this->tableName
-							. ' WHERE ' . implode(' AND ', $where) . ' ) LIMIT 1';
+				$statement = "INSERT INTO " . $this->tableName . " (" . $keys . ") SELECT '" . implode("','", array_values($item))
+							. "' FROM DUAL WHERE NOT EXISTS ( SELECT * FROM " . $this->tableName
+							. " WHERE " . $where . " ) LIMIT 1";
 				break;
 			}
 			
 			// classic insert, may cause errors if primary key is specified
 			case 'insert':
 			default: {
-				$statement = 'INSERT INTO ' . $this->tableName . ' (' . $keys . ') VALUES (' . $values . ')';
+				$statement = "INSERT INTO " . $this->tableName . " (" . $keys . ") VALUES (" . $values . ")";
 			}
 		}
 		
