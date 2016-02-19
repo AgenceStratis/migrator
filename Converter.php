@@ -40,6 +40,7 @@ class Converter implements ItemConverterInterface
 			// String processors
 			'split' 	=> new StringValue\SplitProcessor(ON_VALUES),
 			'upperCase' => new StringValue\UpperCaseProcessor(ON_VALUES | ON_FIELDS),
+			'replace' 	=> new StringValue\ReplaceProcessor(ON_VALUES | ON_FIELDS),
 			
 			// Numeric processors
 			'add' 		=> new NumericValue\AddProcessor(ON_VALUES),
