@@ -38,20 +38,21 @@ class Converter implements ItemConverterInterface
 			'convert' 	=> new Processor\ConvertProcessor(ON_VALUES),
 			
 			// String processors
-			'split' 	=> new StringValue\SplitProcessor(ON_VALUES),
-			'upperCase' => new StringValue\UpperCaseProcessor(ON_VALUES | ON_FIELDS),
-			'replace' 	=> new StringValue\ReplaceProcessor(ON_VALUES | ON_FIELDS),
+			'split' 				=> new StringValue\SplitProcessor(ON_VALUES),
+			'upperCase' 			=> new StringValue\UpperCaseProcessor(ON_VALUES | ON_FIELDS),
+			'replace' 				=> new StringValue\ReplaceProcessor(ON_VALUES | ON_FIELDS),
+			'html_entity_decode' 	=> new StringValue\HtmlEntityDecodeProcessor(ON_VALUES),
 			
 			// Numeric processors
-			'add' 		=> new NumericValue\AddProcessor(ON_VALUES),
-			'sub' 		=> new NumericValue\SubProcessor(ON_VALUES),
-			'mult' 		=> new NumericValue\MultProcessor(ON_VALUES),
-			'div' 		=> new NumericValue\DivProcessor(ON_VALUES),
+			'add' 	=> new NumericValue\AddProcessor(ON_VALUES),
+			'sub' 	=> new NumericValue\SubProcessor(ON_VALUES),
+			'mult' 	=> new NumericValue\MultProcessor(ON_VALUES),
+			'div' 	=> new NumericValue\DivProcessor(ON_VALUES),
 			
 			// Array processors
-			'first' 	=> new ArrayValue\FirstProcessor(ON_VALUES),
-			'join' 		=> new ArrayValue\JoinProcessor(ON_VALUES),
-			'last' 		=> new ArrayValue\LastProcessor(ON_VALUES),
+			'first' => new ArrayValue\FirstProcessor(ON_VALUES),
+			'join' 	=> new ArrayValue\JoinProcessor(ON_VALUES),
+			'last' 	=> new ArrayValue\LastProcessor(ON_VALUES),
 		);
 	}
 	
