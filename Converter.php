@@ -42,6 +42,7 @@ class Converter implements ItemConverterInterface
 			'upperCase' 			=> new StringValue\UpperCaseProcessor(ON_VALUES | ON_FIELDS),
 			'replace' 				=> new StringValue\ReplaceProcessor(ON_VALUES | ON_FIELDS),
 			'html_entity_decode' 	=> new StringValue\HtmlEntityDecodeProcessor(ON_VALUES),
+			'strip_tags' 			=> new StringValue\StripTagsProcessor(ON_VALUES),
 			
 			// Numeric processors
 			'add' 	=> new NumericValue\AddProcessor(ON_VALUES),
