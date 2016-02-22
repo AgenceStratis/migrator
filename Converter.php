@@ -39,7 +39,7 @@ class Converter implements ItemConverterInterface
 			
 			// String processors
 			'split' 				=> new StringValue\SplitProcessor(ON_VALUES),
-			'upperCase' 			=> new StringValue\UpperCaseProcessor(ON_VALUES | ON_FIELDS),
+			'upper_case' 			=> new StringValue\UpperCaseProcessor(ON_VALUES | ON_FIELDS),
 			'replace' 				=> new StringValue\ReplaceProcessor(ON_VALUES | ON_FIELDS),
 			'html_entity_decode' 	=> new StringValue\HtmlEntityDecodeProcessor(ON_VALUES),
 			'strip_tags' 			=> new StringValue\StripTagsProcessor(ON_VALUES),
