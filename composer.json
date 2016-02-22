@@ -25,7 +25,8 @@
 			"Stratis\\Component\\Migrator\\": ""
 		},
 		"exclude-from-classmap": [
-			"/Tests/"
+			"/Tests/",
+			"/Docs/"
 		],
 		"files": [
 			"Utils/array_merge_recursive_distinct.php"

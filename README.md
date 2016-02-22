@@ -1,80 +1,59 @@
 Migrator Component
-==============
-PHP Data Import/Export (CSV, Database, CMS).
+==================
+
+Migrator is a data transfer PHP application, based on [ddeboer/data-import](https://github.com/ddeboer/data-import)
+
+
+Install
+-------
+
+You can install Migrator with composer by adding this configuration to your **composer.json**
+
+```json
+{
+  "repositories": [
+    {
+      "url": "https://github.com/AgenceStratis/migrator.git",
+      "type": "git"
+    }
+  ],
+  "require": {
+    "agencestratis/migrator": "dev-master"
+  }
+}
+```
+
+Then you can download it with `composer install`
+
+
+Configuration
+-------------
+
+Configuration files use YAML language\
+It must include a [source](Source.md) and a [destination](Destination.md)
+
+###### Example
+
+```yaml
+source:
+  type: sql
+  options:
+    database_name: app
+    username: root
+    table: users
+
+dest:
+  type: csv
+  options:
+    file: users.csv
+```
 
 Usage
----------
+-----
 
 ```php
 use Stratis\Component\Migrator\Migrator;
 
 $migrator = new Migrator('config.yml');
 $migrator->process();
-```
-
-Configuration file
----------
-
-I/O formats must be specified, here are some examples:
-
-* CSV file
-```yaml
-source/dest:
-  type: csv
-  options:
-    file: examples/processor/data.csv
-    header: true
-    fields: [ ... ]
-    delimiter: ","
-```
-
-* JSON file
-```yaml
-source/dest:
-  type: json
-  options:
-    file: examples/processor/data.json
-    pretty: false
-    convert_unicode: false
-```
-
-* SQL Database
-```yaml
-source/dest:
-  type: sql
-  options:
-    database_type: mysql
-    database_name: io
-    server: localhost
-    username: root
-    password: 
-    charset: utf8
-    table: test
-```
-
-Additionnal functions and utilites can be added via processors
-Note: Some processors are only availables for Values or Fields
-
-* Processor
-```yaml
-processors:
-  fields/values:
-    fieldName:
-      processorName: arg
-```
-
-* Example
-```yaml
-processors:
-  values:
-    uid:
-      mathAdd: 20
-    title:
-      subStr: [0, 20]
-    price:
-      mathMult: 1.5
-      toInteger:
-      mathAdd: 10
-  fields:
-  
 ```
