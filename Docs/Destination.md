@@ -15,9 +15,9 @@ dest:
 ### CSV
 
 ###### Options
-`string` **file** : Path to generated csv file\
-`string` **delimiter** : Row values separator\
-`string` **enclosure** : Strings enclosure\
+`string` **file** : Path to generated csv file<br>
+`string` **delimiter** : Row values separator<br>
+`string` **enclosure** : Strings enclosure<br>
 `bool` **header** : Insert header in the first line
 
 ###### Example
@@ -34,8 +34,8 @@ dest:
 ### JSON
 
 ###### Options
-`string` **file** : Path to generated json file\
-`bool` **pretty** : Readable output\
+`string` **file** : Path to generated json file<br>
+`bool` **pretty** : Readable output<br>
 `bool` **convert_unicode** : Convert unicode characters
 
 ###### Example
@@ -51,13 +51,13 @@ dest:
 ### SQL
 
 ###### Options
-`string` **database_type** : mysql, sqlite...\
-`string` **database_name**\
-`string` **server**\
-`string` **username**\
-`string` **password**\
-`string` **charset**\
-`string` **table**\
+`string` **database_type** : mysql, sqlite...<br>
+`string` **database_name**<br>
+`string` **server**<br>
+`string` **username**<br>
+`string` **password**<br>
+`string` **charset**<br>
+`string` **table**<br>
 `string` **insert_mode** : "insert", "replace", "not_exists"
 
 ###### Example

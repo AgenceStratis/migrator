@@ -29,7 +29,7 @@ Then you can download it with `composer install`
 Configuration
 -------------
 
-Configuration files use YAML language\
+Configuration files use YAML language<br>
 It must include a [source](Source.md) and a [destination](Destination.md)
 
 ###### Example

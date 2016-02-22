@@ -1,7 +1,7 @@
 Documentation
 =============
 
-Each file must have a `source` and a `destination`\
+Each file must have a `source` and a `destination`<br>
 Another options can be added, like `requires` and `processors`
 
 #### Basic features

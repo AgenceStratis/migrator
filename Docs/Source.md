@@ -6,8 +6,8 @@ Source
 ### CSV
 
 ###### Options
-`string` **file** :  Path to csv file\
-`string` **delimiter** : Value separator\
+`string` **file** :  Path to csv file<br>
+`string` **delimiter** : Value separator<br>
 `bool` **header** : Use first line as header
 
 ###### Example
@@ -38,13 +38,13 @@ source:
 ### SQL
 
 ###### Options
-`string` **database_type** : mysql, sqlite...\
-`string` **database_name**\
-`string` **server**\
-`string` **username**\
-`string` **password**\
-`string` **charset**\
-`string` **table**\
+`string` **database_type** : mysql, sqlite...<br>
+`string` **database_name**<br>
+`string` **server**<br>
+`string` **username**<br>
+`string` **password**<br>
+`string` **charset**<br>
+`string` **table**<br>
 `string` **query**
 
 ###### Example
