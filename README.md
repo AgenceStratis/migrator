@@ -18,7 +18,7 @@ You can install Migrator with composer by adding this configuration to your **co
     }
   ],
   "require": {
-    "agencestratis/migrator": "dev-master"
+    "AgenceStratis/migrator": "dev-master"
   }
 }
 ```
