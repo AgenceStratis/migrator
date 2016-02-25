@@ -10,6 +10,7 @@ use Ddeboer\DataImport\Filter\OffsetFilter;
 // Readers
 use Ddeboer\DataImport\Reader\CsvReader;
 use Ddeboer\DataImport\Reader\PdoReader;
+use Ddeboer\DataImport\Reader\ExcelReader;
 use Stratis\Component\Migrator\Reader\JsonReader;
 
 // Writers
@@ -81,6 +82,9 @@ class Migrator extends Workflow
 			// Typo3 File
 			'root_dir' => array(),
 			'file_dir' => array(),
+			
+			// Excel
+			'sheet' => null
 		);
 		
 		$io = array(
@@ -234,6 +238,21 @@ class Migrator extends Workflow
 				
 				$db 	= new medoo($options);
 				$reader = new PdoReader($db->pdo, $query);
+				
+				break;
+			}
+			
+			case 'excel': {
+				
+				$file 	= $options['file'];
+				$header = $options['header'];
+				$sheet  = $options['sheet'];
+				
+				$reader = new ExcelReader(
+					new \SplFileObject($file),
+					($header ? 0 : null),
+					$sheet
+				);
 				
 				break;
 			}
