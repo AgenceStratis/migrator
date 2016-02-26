@@ -47,6 +47,7 @@ class Converter implements ItemConverterInterface
 			// String
 			'split' 				=> new StringValue\SplitProcessor(ON_VALUES),
 			'upper_case' 			=> new StringValue\UpperCaseProcessor(ON_VALUES | ON_FIELDS),
+			'camel_case' 			=> new StringValue\CamelCaseProcessor(ON_VALUES),
 			'replace' 				=> new StringValue\ReplaceProcessor(ON_VALUES | ON_FIELDS),
 			'html_entity_decode' 	=> new StringValue\HtmlEntityDecodeProcessor(ON_VALUES),
 			'strip_tags' 			=> new StringValue\StripTagsProcessor(ON_VALUES),
