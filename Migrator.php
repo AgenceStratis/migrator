@@ -12,6 +12,7 @@ use Ddeboer\DataImport\Reader\CsvReader;
 use Ddeboer\DataImport\Reader\PdoReader;
 use Ddeboer\DataImport\Reader\ExcelReader;
 use Stratis\Component\Migrator\Reader\JsonReader;
+use Stratis\Component\Migrator\Reader\MMReader;
 
 // Writers
 use Ddeboer\DataImport\Writer\CsvWriter;
@@ -84,7 +85,12 @@ class Migrator extends Workflow
 			'file_dir' => array(),
 			
 			// Excel
-			'sheet' => null
+			'sheet' => null,
+			
+			// MM
+			'local' 	=> array(),
+			'foreign' 	=> array(),
+			'rule' 		=> array(),
 		);
 		
 		$io = array(
@@ -185,12 +191,21 @@ class Migrator extends Workflow
 	* Get Reader
 	* Create a reader object, according to local config
 	*
+	* @param array $source
 	* @return object $reader
 	*/
-	protected function getReader()
+	protected function getReader($source = null)
 	{
-		$type 		= $this->configuration['source']['type'];
-		$options 	= $this->configuration['source']['options'];
+		if ($source == null) {
+			
+			$type 		= $this->configuration['source']['type'];
+			$options 	= $this->configuration['source']['options'];
+			
+		} else {
+			
+			$type 		= $source['type'];
+			$options 	= $source['options'];
+		}
 		
 		switch ($type) {
 			
@@ -252,6 +267,21 @@ class Migrator extends Workflow
 					new \SplFileObject($file),
 					($header ? 0 : null),
 					$sheet
+				);
+				
+				break;
+			}
+			
+			case 'mm': {
+				
+				$local 		= $options['local'];
+				$foreign 	= $options['foreign'];
+				$rule 		= $options['rule'];
+				
+				$reader = new MMReader(
+					$this->getReader($local),
+					$this->getReader($foreign),
+					$rule
 				);
 				
 				break;
