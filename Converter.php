@@ -20,6 +20,11 @@ class Converter implements ItemConverterInterface
 	protected $processors = array();
 	
 	/**
+	* @var integer
+	*/
+	protected $count = 0;
+	
+	/**
 	* Constructor
 	*
 	* @param array $configuration
@@ -30,27 +35,29 @@ class Converter implements ItemConverterInterface
 		
 		$this->processors = array(
 			
+			// Core
 			'delete' 	=> new Processor(ON_FIELDS),
 			'copy' 		=> new Processor(ON_VALUES),
+			'increment' => new Processor(ON_VALUES),
 			
-			// Mixed values processors
+			// Mixed values
 			'set' 		=> new Processor\SetProcessor(ON_VALUES | ON_FIELDS),
 			'convert' 	=> new Processor\ConvertProcessor(ON_VALUES),
 			
-			// String processors
+			// String
 			'split' 				=> new StringValue\SplitProcessor(ON_VALUES),
 			'upper_case' 			=> new StringValue\UpperCaseProcessor(ON_VALUES | ON_FIELDS),
 			'replace' 				=> new StringValue\ReplaceProcessor(ON_VALUES | ON_FIELDS),
 			'html_entity_decode' 	=> new StringValue\HtmlEntityDecodeProcessor(ON_VALUES),
 			'strip_tags' 			=> new StringValue\StripTagsProcessor(ON_VALUES),
 			
-			// Numeric processors
+			// Numeric
 			'add' 	=> new NumericValue\AddProcessor(ON_VALUES),
 			'sub' 	=> new NumericValue\SubProcessor(ON_VALUES),
 			'mult' 	=> new NumericValue\MultProcessor(ON_VALUES),
 			'div' 	=> new NumericValue\DivProcessor(ON_VALUES),
 			
-			// Array processors
+			// Array
 			'first' => new ArrayValue\FirstProcessor(ON_VALUES),
 			'join' 	=> new ArrayValue\JoinProcessor(ON_VALUES),
 			'last' 	=> new ArrayValue\LastProcessor(ON_VALUES),
@@ -140,6 +147,11 @@ class Converter implements ItemConverterInterface
 					continue;
 				}
 				
+				// increment value
+				if (array_key_exists('increment', $params)) {
+					$newValue = $this->count;
+				}
+								
 				// Search for matching processors
 				foreach ($params as $paramKey => $paramValue) {
 					if (array_key_exists($paramKey, $this->processors)) {
@@ -192,6 +204,9 @@ class Converter implements ItemConverterInterface
 				unset($route[$field]);
 			}
 		}
+		
+		// inc count value
+		$this->count++;
 		
 		// Apply routes (fields changenames)
 		return $this->processRoute($item, $route);
