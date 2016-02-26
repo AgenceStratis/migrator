@@ -23,6 +23,7 @@ class PdoWriter extends \Ddeboer\DataImport\Writer\PdoWriter
 	{
 		parent::__construct($pdo, $tableName);
 		$this->insertMode = strtolower($insertMode);
+		$this->pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_WARNING);
 	}
 	
 	/**
@@ -68,6 +69,8 @@ class PdoWriter extends \Ddeboer\DataImport\Writer\PdoWriter
 			}
 		}
 		
+		// var_dump($statement); die;
+		
 		return $statement;
 	}
 	
@@ -78,23 +81,23 @@ class PdoWriter extends \Ddeboer\DataImport\Writer\PdoWriter
 	{
 		try {
 			
-			// prepare the statment as soon as we know how many values there are
-			// if (! $this->statement) {
-				
-				$this->statement = $this->pdo->prepare(
-					$this->createStatement($item)
-				);
-				
-				//for PDO objects that do not have exceptions enabled
-				if (! $this->statement) {
-					throw new WriterException('Failed to prepare write statement for item: ' . implode(',', $item));
-				}
-			// }
+			$this->statement = $this->pdo->prepare(
+				$this->createStatement($item)
+			);
+			
+			//for PDO objects that do not have exceptions enabled
+			if (! $this->statement) {
+				throw new WriterException('Failed to prepare write statement for item: ' . implode(',', $item));
+			}
 
 			//do the insert
 			if (!$this->statement->execute(array_values($item))) {
+				
 				$this->pdo->errorInfo();
-				throw new WriterException('Failed to write item: '.implode(',', $item));
+				var_dump($item);
+				die;
+				
+				// throw new WriterException('Failed to write item: '.implode(',', $item));
 			}
 
 		} catch (\Exception $e) {
