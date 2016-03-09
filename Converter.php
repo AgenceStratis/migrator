@@ -144,10 +144,8 @@ class Converter implements ItemConverterInterface
 				if (array_key_exists('copy', $params)) {
 					$copyFrom = $params['copy'];
 					if (array_key_exists($copyFrom, $item)) {
-						// $item[$field] = $item[$copyFrom];
 						$newValue = $item[$copyFrom];
 					}
-					// continue;
 				}
 				
 				// increment value
