@@ -62,6 +62,7 @@ class Converter implements ItemConverterInterface
 			'first' => new ArrayValue\FirstProcessor(ON_VALUES),
 			'join' 	=> new ArrayValue\JoinProcessor(ON_VALUES),
 			'last' 	=> new ArrayValue\LastProcessor(ON_VALUES),
+			'pop' 	=> new ArrayValue\PopProcessor(ON_VALUES),
 		);
 	}
 	
@@ -143,9 +144,10 @@ class Converter implements ItemConverterInterface
 				if (array_key_exists('copy', $params)) {
 					$copyFrom = $params['copy'];
 					if (array_key_exists($copyFrom, $item)) {
-						$item[$field] = $item[$copyFrom];
+						// $item[$field] = $item[$copyFrom];
+						$newValue = $item[$copyFrom];
 					}
-					continue;
+					// continue;
 				}
 				
 				// increment value
