@@ -57,6 +57,7 @@ class Converter implements ItemConverterInterface
 			'sub' 	=> new NumericValue\SubProcessor(ON_VALUES),
 			'mult' 	=> new NumericValue\MultProcessor(ON_VALUES),
 			'div' 	=> new NumericValue\DivProcessor(ON_VALUES),
+			'mod' 	=> new NumericValue\ModProcessor(ON_VALUES),
 			
 			// Array
 			'first' => new ArrayValue\FirstProcessor(ON_VALUES),
