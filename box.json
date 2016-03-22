@@ -1,0 +1,6 @@
+{
+    "directories": ["src", "vendor"],
+    "main": "bin/main.php",
+    "output": "migrator.phar",
+    "stub": true
+}

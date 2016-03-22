@@ -1,6 +1,4 @@
 /vendor
 /.vscode
 /composer.lock
-/TODO
-/Tests/Results/*
-/Interpreter*
+/migrator.phar
