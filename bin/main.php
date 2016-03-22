@@ -1,6 +1,6 @@
 <?php
 
-require 'vendor/autoload.php';
+require '../vendor/autoload.php';
 use Stratis\Component\Migrator\Migrator;
 
 // Remove 1st element
