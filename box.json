@@ -1,6 +1,22 @@
 {
-    "directories": ["src", "vendor"],
-    "main": "bin/main.php",
-    "output": "migrator.phar",
-    "stub": true
+  "alias": "migrator.phar",
+  "chmod": "0755",
+  "directories": [
+    "src"
+  ],
+  "finder": [
+    {
+      "name": "*.php",
+      "exclude": [
+        "ddeboer/data-import/tests",
+        "phpoffice/phpexcel/Examples",
+        "phpoffice/phpexcel/unitTests",
+        "symfony/yaml/Tests"
+      ],
+      "in": "vendor"
+    }
+  ],
+  "main": "bin/main.php",
+  "output": "migrator.phar",
+  "stub": true
 }
