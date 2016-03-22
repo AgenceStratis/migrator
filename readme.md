@@ -4,8 +4,8 @@ Migrator Component
 Migrator is a data transfer PHP application, based on [ddeboer/data-import](https://github.com/ddeboer/data-import)
 
 
-Install
--------
+Use as a library
+----------------
 
 You can install Migrator with composer by adding this configuration to your **composer.json**
 
@@ -23,7 +23,28 @@ You can install Migrator with composer by adding this configuration to your **co
 }
 ```
 
-Then you can download it with `composer install`
+Then you can download it with `composer install` and use it in your project
+
+
+```php
+use Stratis\Component\Migrator\Migrator;
+
+$migrator = new Migrator('config.yml');
+$migrator->process();
+```
+
+
+Use as an executable
+--------------------
+
+It's possible to create an application with [PHP Box](https://github.com/box-project/box2).
+
+Just clone this repo and run `box.phar build`
+
+After `migrator.phar` is built, you can now use it with YAML files as parameter
+
+**Note:** All the files will be merged in one configuration
+
 
 
 Configuration
@@ -46,14 +67,4 @@ dest:
   type: csv
   options:
     file: users.csv
-```
-
-Usage
------
-
-```php
-use Stratis\Component\Migrator\Migrator;
-
-$migrator = new Migrator('config.yml');
-$migrator->process();
 ```
