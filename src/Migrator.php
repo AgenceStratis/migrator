@@ -23,7 +23,7 @@ class Migrator extends Workflow
     /**
      * @var int
      */
-    const version = 4;
+    const version = 5;
 
     /**
      * @var array
@@ -39,6 +39,20 @@ class Migrator extends Workflow
     {
         // Load configuration file(s)
         $this->loadConf($fileset);
+
+        if (array_key_exists('source', $this->conf)) {
+
+            // Get single source data
+            $source = $this->conf['source'];
+
+            // Set sources if it does not exists
+            if (!array_key_exists('sources', $this->conf)) {
+                $this->conf['sources'] = array();
+            }
+
+            // Move single source into sources list
+            $this->conf['sources'][] = $source;
+        }
 
         // Create configuration object
         $this->conf = new Configuration($this->conf);
