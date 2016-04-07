@@ -54,7 +54,7 @@ class Configuration
      * @param array $search
      * @return Configuration
      */
-    public function export(array $search)
+    public function export(array $search = array())
     {
         return new Configuration(
             $this->get($search)

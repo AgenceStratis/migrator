@@ -4,7 +4,6 @@ namespace Stratis\Component\Migrator;
 
 use Stratis\Component\Migrator\Converter\Processor;
 use Stratis\Component\Migrator\Converter\Mapping;
-
 use Symfony\Component\Yaml\Yaml;
 use Ddeboer\DataImport\Workflow;
 use Ddeboer\DataImport\Filter\OffsetFilter;
@@ -16,15 +15,15 @@ use Ddeboer\DataImport\Filter\OffsetFilter;
  * Importer/Exporter for multiples data sources
  *
  * Usage:
- *    $migrator = new Migrator('config.yml');
- *    $migrator->process();
+ *  $migrator = new Migrator('config.yml');
+ *  $migrator->process();
  */
 class Migrator extends Workflow
 {
     /**
      * @var int
      */
-    const version = 3;
+    const version = 4;
 
     /**
      * @var array
@@ -44,21 +43,9 @@ class Migrator extends Workflow
         // Create configuration object
         $this->conf = new Configuration($this->conf);
 
-        // Create reader object
-        $reader = $this->createLexer(
-            $this->conf->export(array('source')),
-            Migrator::READER
-        );
-
-        // Create writer
-        $writer = $this->createLexer(
-            $this->conf->export(array('dest')),
-            Migrator::WRITER
-        );
-
-        // init workflow
-        parent::__construct($reader, $logger);
-        $this->addWriter($writer);
+        // Init workflow
+        parent::__construct($this->createTask(), $logger);
+        $this->addWriter($this->createWriter());
 
         // Starting line and number of items to get
         $this->addFilter(
@@ -126,32 +113,39 @@ class Migrator extends Workflow
         $this->conf = array_merge_recursive_distinct($this->conf, $conf);
     }
 
-
     /**
-     * Create a reader or a writer object, according to given data type
-     * Lexer type can be: Migrator::READER or Migrator::WRITER
-     */
-    const READER = 'Reader';
-    const WRITER = 'Writer';
-
-    /**
+     * Create an object with a Configuration as parameter
+     * Can be used to create Readers, Writers and Tasks
+     *
+     * Examples:
+     *  Migrator::summon(array('Reader', 'Csv'), $config);
+     *  Migrator::summon(array('Writer', 'Json'), $config);
+     *  Migrator::summon(array('Task', 'Typo3', 'MM'), $config);
+     *
+     * @param string $namespace
      * @param Configuration $config
-     * @param $lexer
      * @return mixed
      * @throws \Exception
      */
-    protected function createLexer($config, $lexer)
+    public static function summon($namespace, Configuration $config)
     {
-        // Get type from config and format it (camel case)
-        $type = $config->get(array('type'));
+        // Set namespace as camel case
+        $namespace = array_values(
+            array_map('ucwords',
+                array_map('strtolower', $namespace)
+            )
+        );
 
-        // No type specified
-        if ($type == null || strlen($type) == 0) {
-            throw new \Exception('No data type found');
+        // Pop prefix from namespace
+        $prefix = array_pop($namespace);
+
+        // No type specified in namespace
+        if ($prefix == null || strlen($prefix) == 0) {
+            throw new \Exception('Type not found in ' . implode('\\', $namespace));
         }
 
         // Build class name from type
-        $class = 'Stratis\Component\Migrator\\' . $lexer . '\\' . ucwords(strtolower($type)) . $lexer;
+        $class = 'Stratis\Component\Migrator\\' . implode('\\', $namespace) . '\\' . $prefix . $namespace[0];
 
         // Check if class exists
         if (!class_exists($class)) {
@@ -160,6 +154,46 @@ class Migrator extends Workflow
 
         // Return built lexer with params
         return new $class($config);
+    }
+
+    /**
+     * Create a Reader with given Configuration object
+     * @param Configuration $config
+     * @return mixed
+     * @throws \Exception
+     */
+    public static function createReader(Configuration $config) {
+        $name = $config->get(array('type'));
+        return Migrator::summon(array('Reader', $name), $config);
+    }
+
+    /**
+     * Create Writer from config
+     * @return mixed
+     * @throws \Exception
+     */
+    protected function createWriter() {
+        $name   = $this->conf->get(array('dest', 'type'));
+        $config = $this->conf->export(array('dest'));
+        return Migrator::summon(array('Writer', $name), $config);
+    }
+
+    /**
+     * Create Task from config
+     * @return mixed
+     * @throws \Exception
+     */
+    protected function createTask()
+    {
+        // Split name and prepend Task namespace to it
+        $name = $this->conf->get(array('task', 'type'), 'default');
+        $namespace = array_merge(array('Task'), explode('/', $name));
+
+        // Summon a Task with the current Migrator config
+        return Migrator::summon(
+            $namespace,
+            $this->conf->export()
+        );
     }
 
     /**
