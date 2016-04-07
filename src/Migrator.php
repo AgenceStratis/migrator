@@ -42,16 +42,13 @@ class Migrator extends Workflow
 
         if (array_key_exists('source', $this->conf)) {
 
-            // Get single source data
-            $source = $this->conf['source'];
-
-            // Set sources if it does not exists
+            // Set sources if it does not exist
             if (!array_key_exists('sources', $this->conf)) {
                 $this->conf['sources'] = array();
             }
 
             // Move single source into sources list
-            $this->conf['sources'][] = $source;
+            $this->conf['sources'][] = $this->conf['source'];
         }
 
         // Create configuration object
