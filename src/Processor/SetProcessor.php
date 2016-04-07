@@ -1,12 +1,20 @@
 <?php
 
 namespace Stratis\Component\Migrator\Processor;
-use Stratis\Component\Migrator\Processor;
 
-class SetProcessor extends Processor
+/**
+ * Class SetProcessor
+ * @package Stratis\Component\Migrator\Processor
+ */
+class SetProcessor implements ProcessorInterface
 {
-	public function exec($oldValue, $newValue)
-	{
-		return $newValue;
-	}
+    /**
+     * @param $value
+     * @param $newValue
+     * @return mixed
+     */
+    public static function exec($value, $newValue)
+    {
+        return $newValue;
+    }
 }

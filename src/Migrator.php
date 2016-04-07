@@ -2,418 +2,188 @@
 
 namespace Stratis\Component\Migrator;
 
-use medoo;
+use Stratis\Component\Migrator\Converter\Processor;
+use Stratis\Component\Migrator\Converter\Mapping;
+
 use Symfony\Component\Yaml\Yaml;
 use Ddeboer\DataImport\Workflow;
 use Ddeboer\DataImport\Filter\OffsetFilter;
 
-// Readers
-use Ddeboer\DataImport\Reader\CsvReader;
-use Ddeboer\DataImport\Reader\PdoReader;
-use Ddeboer\DataImport\Reader\ExcelReader;
-use Stratis\Component\Migrator\Reader\JsonReader;
-use Stratis\Component\Migrator\Reader\MMReader;
-
-// Writers
-use Ddeboer\DataImport\Writer\CsvWriter;
-use Ddeboer\DataImport\Writer\CallbackWriter;
-use Stratis\Component\Migrator\Writer\PdoWriter;
-use Stratis\Component\Migrator\Writer\JsonWriter;
-use Stratis\Component\Migrator\Writer\Typo3MMWriter;
-use Stratis\Component\Migrator\Writer\CopyFileWriter;
-use Stratis\Component\Migrator\Writer\Typo3FileWriter;
-
 /**
-* Stratis Migrator
-* Importer/Exporter for multiples data sources
-* 
-* Usage:
-* 	$migrator = new Migrator('config.yaml');
-* 	$migrator->process();
-*/
+ * Class Migrator
+ * @package Stratis\Component\Migrator
+ *
+ * Importer/Exporter for multiples data sources
+ *
+ * Usage:
+ *    $migrator = new Migrator('config.yml');
+ *    $migrator->process();
+ */
 class Migrator extends Workflow
 {
-	/**
-	* @var array
-	*/
-	protected $configuration;
-	
-	/**
-	* Constructor
-	*
-	* @param string $fileName 
-	* @param object $logger 
-	*/
-	public function __construct($fileName, $logger = null)
-	{
-		$options = array(
-			
-			'file' 		=> '',
-			'offset' 	=> 0,
-			'count' 	=> null,
-			
-			 // CSV
-			'header' 	=> true,
-			'delimiter' => ',',
-			'enclosure' => '"',
-			'utf8' 		=> false,
-			
-			// JSON
-			'pretty' 	=> false,
-			'unicode' 	=> false,
-			
-			// SQL
-			'database_type' => 'mysql',
-			'charset' => 'utf8',
-			'server' => 'localhost',
-			'database_name' => '',
-			'username' => '',
-			'password' => '',
-			'table' => '',
-			'query' => '',
-			'insert_mode' => 'insert',
-			
-			// Typo3 MM
-			'mm_tables' => array(),
-			
-			// Copy File
-			'from' 	=> '',
-			'to' 	=> '',
-			
-			// Typo3 File
-			'root_dir' => array(),
-			'file_dir' => array(),
-			
-			// Excel
-			'sheet' => null,
-			
-			// MM
-			'local' 	=> array(),
-			'foreign' 	=> array(),
-			'rule' 		=> array(),
-		);
-		
-		$io = array(
-			'type' => '',
-			'options' => $options
-		);
-		
-		$this->configuration = array(
-			
-			'require' 	=> array(),
-			
-			'source' 	=> $io,
-			'dest' 		=> $io,
-			
-			'processors' => array(
-				'values' => array(),
-				'fields' => array()
-			)
-		);
-		
-		unset($options, $io);
-		
-		// add custom config file
-		$this->loadConf($fileName);
-		
-		// create i/o parsers
-		$reader = $this->getReader();
-		$writer = $this->getWriter();
-		
-		// init workflow
-		parent::__construct($reader, $logger);
-		$this->addWriter($writer);
-		
-		// offset + count
-		$this->addFilter(
-			new OffsetFilter(
-				$this->configuration['source']['options']['offset'],
-				$this->configuration['source']['options']['count']
-			)
-		);
-		
-		// add processors to the workflow
-		$this->addItemConverter(
-			new Converter(
-				$this->configuration['processors']
-			)
-		);
-	}
-	
-	/**
-	* Load configuration file
-	*
-	* @param mixed $fileName
-	*/
-	protected function loadConf($fileName)
-	{
-		if (is_array($fileName)) {
-			
-			foreach ($fileName as $subFile) {
-				$this->loadConf($subFile);
-			}
-			
-			return;
-		}
-		
-		if (! file_exists($fileName)) {
-			throw new \Exception('Configuration file does not exist');
-		}
-		
-		$conf = Yaml::parse(
-			file_get_contents($fileName)
-		);
-		
-		// execute requires
-		if (array_key_exists('require', $conf)) {
-			
-			$require = $conf['require'];
-			$reqPath = dirname($fileName) . '/';
-			
-			if (is_array($require) && count($require) > 0) {
-				foreach ($require as $reqFile) {
-					$this->loadConf($reqPath . $reqFile);
-				}
-			}
-			
-			if (is_string($require) && strlen($require) > 0) {
-				$this->loadConf($reqPath . $require);
-			}
-		}
-		
-		// merge configurations
-		$this->configuration = array_merge_recursive_distinct(
-			$this->configuration, $conf
-		);
-	}
-	
-	/**
-	* Get Reader
-	* Create a reader object, according to local config
-	*
-	* @param array $source
-	* @return object $reader
-	*/
-	protected function getReader($source = null)
-	{
-		if ($source == null) {
-			
-			$type 		= $this->configuration['source']['type'];
-			$options 	= $this->configuration['source']['options'];
-			
-		} else {
-			
-			$type 		= $source['type'];
-			$options 	= $source['options'];
-		}
-		
-		switch ($type) {
-			
-			case 'csv': {
-				
-				$delimiter 	= $options['delimiter'];
-				$file 		= $options['file'];
-				$header 	= $options['header'];
-				
-				$reader = new CsvReader(
-					new \SplFileObject($file),
-					$delimiter
-				);
-				
-				if ($header) {
-					$reader->setHeaderRowNumber(0);
-				}
-				
-				break;
-			}
-			
-			case 'json': {
-				
-				$file 	= $options['file'];
-				
-				$reader = new JsonReader(
-					new \SplFileObject($file)
-				);
-				
-				break;
-			}
-			
-			case 'sql': {
-				
-				$table 	= $options['table'];
-				$query 	= $options['query'];
-				
-				if (strlen($table) == 0) {
-					throw new \Exception('Table is not defined');
-				}
-				
-				if (strlen($query) == 0) {
-					$query = 'SELECT * FROM ' . $table;
-				}
-				
-				$db 	= new medoo($options);
-				$reader = new PdoReader($db->pdo, $query);
-				
-				break;
-			}
-			
-			case 'excel': {
-				
-				$file 	= $options['file'];
-				$header = $options['header'];
-				$sheet  = $options['sheet'];
-				
-				$reader = new ExcelReader(
-					new \SplFileObject($file),
-					($header ? 0 : null),
-					$sheet
-				);
-				
-				break;
-			}
-			
-			case 'mm': {
-				
-				$local 		= $options['local'];
-				$foreign 	= $options['foreign'];
-				$rule 		= $options['rule'];
-				
-				$reader = new MMReader(
-					$this->getReader($local),
-					$this->getReader($foreign),
-					$rule
-				);
-				
-				break;
-			}
-			
-			default: {
-				throw new \Exception('Reader is not defined');
-			}
-		}
-		
-		return $reader;
-	}
-	
-	/**
-	* Get Writer
-	* Create a writer object, according to local config
-	*
-	* @return object $writer
-	*/
-	protected function getWriter()
-	{
-		$type 		= $this->configuration['dest']['type'];
-		$options 	= $this->configuration['dest']['options'];
-		
-		switch ($type) {
-			
-			case 'csv': {
-				
-				$delimiter 	= $options['delimiter'];
-				$enclosure 	= $options['enclosure'];
-				$file 		= $options['file'];
-				$utf8 		= $options['utf8'];
-				$header 	= $options['header'];
-				
-				$writer = new CsvWriter(
-					$delimiter,
-					$enclosure,
-					fopen($file, 'w'),
-					$utf8,
-					true
-				);
-				
-				break;
-			}
-			
-			case 'json': {
-				
-				$file 		= $options['file'];
-				$pretty 	= $options['pretty'];
-				$unicode 	= $options['unicode'];
-				
-				$writer = new JsonWriter(
-					fopen($file, 'w'),
-					$pretty,
-					$unicode
-				);
-				
-				break;
-			}
-			
-			case 'sql': {
-				
-				$table 		= $options['table'];
-				$insertMode = $options['insert_mode'];
-				
-				$db 	= new medoo($options);
-				$writer = new PdoWriter(
-					$db->pdo,
-					$table,
-					$insertMode
-				);
-				
-				break;
-			}
-			
-			case 'typo3mm': {
-				
-				$mmTables 	= $options['mm_tables'];
-				$insertMode = $options['insert_mode'];
-				
-				$db 	= new medoo($options);
-				$writer = new Typo3MMWriter(
-					$db->pdo,
-					$mmTables,
-					$insertMode
-				);
-				
-				break;
-			}
-			
-			case 'typo3file': {
-				
-				$realDir 	= $options['real_dir'];
-				$fileDir 	= $options['file_dir'];
-				$insertMode = $options['insert_mode'];
-				
-				$db 	= new medoo($options);
-				$writer = new Typo3FileWriter(
-					$db->pdo,
-					$realDir,
-					$fileDir,
-					$insertMode
-				);
-				
-				break;
-			}
-			
-			case 'copyfile': {
-				
-				$writer = new CopyFileWriter(
-					$options['from'],
-					$options['to']
-				);
-				
-				break;
-			}
-			
-			case 'cli': {
-				
-				$writer = new CallbackWriter(function($item)
-				{
-					var_dump($item);
-				});
-				
-				break;
-			}
-			
-			default: {
-				throw new \Exception('Writer is not defined');
-			}
-		}
-		
-		return $writer;
-	}
+    /**
+     * @var int
+     */
+    const version = 3;
+
+    /**
+     * @var array
+     */
+    protected $conf = array();
+
+    /**
+     * Migrator constructor.
+     * @param string|array $fileset
+     * @param $logger
+     */
+    public function __construct($fileset, $logger = null)
+    {
+        // Load configuration file(s)
+        $this->loadConf($fileset);
+
+        // Create configuration object
+        $this->conf = new Configuration($this->conf);
+
+        // Create reader object
+        $reader = $this->createLexer(
+            $this->conf->export(array('source')),
+            Migrator::READER
+        );
+
+        // Create writer
+        $writer = $this->createLexer(
+            $this->conf->export(array('dest')),
+            Migrator::WRITER
+        );
+
+        // init workflow
+        parent::__construct($reader, $logger);
+        $this->addWriter($writer);
+
+        // Starting line and number of items to get
+        $this->addFilter(
+            new OffsetFilter(
+                $this->conf->get(array('options', 'offset'), 0),
+                $this->conf->get(array('options', 'count'), null)
+            )
+        );
+
+        // Add processors to the workflow
+        $this->addItemConverter(
+            new Processor(
+                $this->conf->get(array('processors'), array())
+            )
+        );
+
+        // Add mapping to the workflow
+        $this->addItemConverter(
+            new Mapping(
+                $this->conf->get(array('mapping'), array())
+            )
+        );
+    }
+
+    /**
+     * Load configuration file
+     * @param $fileName
+     * @throws \Exception
+     */
+    protected function loadConf($fileName)
+    {
+        if (is_array($fileName)) {
+            foreach ($fileName as $subFile) {
+                $this->loadConf($subFile);
+            }
+            return;
+        }
+
+        if (!file_exists($fileName)) {
+            throw new \Exception('Configuration file does not exist');
+        }
+
+        $conf = Yaml::parse(
+            file_get_contents($fileName)
+        );
+
+        // execute requires
+        if (array_key_exists('require', $conf)) {
+
+            $require = $conf['require'];
+            $reqPath = dirname($fileName) . '/';
+
+            if (is_array($require) && count($require) > 0) {
+                foreach ($require as $reqFile) {
+                    $this->loadConf($reqPath . $reqFile);
+                }
+            }
+
+            if (is_string($require) && strlen($require) > 0) {
+                $this->loadConf($reqPath . $require);
+            }
+        }
+
+        // merge configurations
+        $this->conf = array_merge_recursive_distinct($this->conf, $conf);
+    }
+
+
+    /**
+     * Create a reader or a writer object, according to given data type
+     * Lexer type can be: Migrator::READER or Migrator::WRITER
+     */
+    const READER = 'Reader';
+    const WRITER = 'Writer';
+
+    /**
+     * @param Configuration $config
+     * @param $lexer
+     * @return mixed
+     * @throws \Exception
+     */
+    protected function createLexer($config, $lexer)
+    {
+        // Get type from config and format it (camel case)
+        $type = $config->get(array('type'));
+
+        // No type specified
+        if ($type == null || strlen($type) == 0) {
+            throw new \Exception('No data type found');
+        }
+
+        // Build class name from type
+        $class = 'Stratis\Component\Migrator\\' . $lexer . '\\' . ucwords(strtolower($type)) . $lexer;
+
+        // Check if class exists
+        if (!class_exists($class)) {
+            throw new \Exception($class . ' does not exists');
+        }
+
+        // Return built lexer with params
+        return new $class($config);
+    }
+
+    /**
+     * Show version in CLI env
+     * @return string
+     */
+    public static function showVersion()
+    {
+        echo "Migrator version: " . Migrator::version . "\n",
+        "Copyright (c) 2016 Stratis\n";
+        die;
+    }
+
+    /**
+     * Show usage in CLI env
+     * @return string
+     */
+    public static function showUsage()
+    {
+        echo "\nUsage:\n",
+        " migrator.phar [files...]\n\n",
+        "Options:\n",
+        " -h, --help \t\tThis small usage guide\n",
+        " -v, --version \t\tOutput version information\n\n";
+        die;
+    }
 }

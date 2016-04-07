@@ -1,15 +1,40 @@
 <?php
 
 namespace Stratis\Component\Migrator\Reader;
-use Ddeboer\DataImport\Reader;
+use Stratis\Component\Migrator\Configuration;
+use Ddeboer\DataImport\Reader\ReaderInterface;
 
 /**
-* JsonReader
-*/
-class JsonReader implements Reader
+ * Class JsonReader
+ * @package Stratis\Component\Migrator\Reader
+ */
+class JsonReader extends ReaderInterface
 {
-	public function __construct(array $data)
+    /**
+     * JsonReader constructor.
+     * @param Configuration $config
+     * @throws \Exception
+     */
+	public function __construct(Configuration $config)
 	{
-		$this->data = json_decode($data);
+        $filename = $config->get(array('filename'));
+
+        if ($filename == null) {
+            throw new \Exception('Filename is not defined');
+        }
+
+		$this->data = json_decode(
+			file_get_contents($filename)
+		);
 	}
+
+    /**
+     * @return array
+     */
+    public function getFields()
+    {
+        return array_keys(
+            current($this->data)
+        );
+    }
 }
