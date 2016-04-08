@@ -4,31 +4,54 @@ namespace Stratis\Component\Migrator\Writer;
 
 use Ddeboer\DataImport\Writer;
 use Ddeboer\DataImport\Exception\WriterException;
+use Stratis\Component\Migrator\Configuration;
 
-class PdoWriter extends \Ddeboer\DataImport\Writer\PdoWriter
+// TODO: Fix class and insert modes
+
+/**
+ * Class DbWriter
+ * @package Stratis\Component\Migrator\Writer
+ *
+ * @config string $host
+ * @config string $dbname
+ * @config string $dbtype
+ * @config string $username
+ * @config string $password
+ * @config string $table
+ * @config string $insert_mode
+ */
+class DbWriter extends \Ddeboer\DataImport\Writer\PdoWriter
 {
     /**
-     * @param string $insertMode
+     * @var string
      */
-    protected $insertMode = 'insert';
+    protected $insertMode;
+
 
     /**
-     * Constructor
-     *
-     * @param \PDO $pdo
-     * @param string $tableName
-     * @param string $insertMode
+     * DbWriter constructor.
+     * @param Configuration $config
      */
-    public function __construct(\PDO $pdo, $tableName = null, $insertMode = '')
+    public function __construct(Configuration $config)
     {
-        parent::__construct($pdo, $tableName);
+        $host       = $config->get(array('host'), 'localhost');
+        $dbname     = $config->get(array('dbname'), '');
+        $dbtype     = $config->get(array('dbtype'), 'mysql');
+        $username   = $config->get(array('username'), 'root');
+        $password   = $config->get(array('password'), '');
+        $table      = $config->get(array('table'), '');
+
+        $insertMode = $config->get(array('insert_mode'), 'insert');
+
+        $pdo = new \PDO($dbtype . ':host=' . $host . ';dbname=' . $dbname, $username, $password);
+        parent::__construct($pdo, $table);
+
         $this->insertMode = strtolower($insertMode);
         $this->pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_WARNING);
     }
 
     /**
      * Create Statement using mode value
-     *
      * @param array $item
      * @return string
      */

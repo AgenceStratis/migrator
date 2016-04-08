@@ -13,9 +13,7 @@
 	"require": {
 		"php": ">=5.5.9",
 		"ddeboer/data-import": "@stable",
-		"psr/log": "^1.0",
 		"symfony/yaml": "^3.0",
-		"catfan/Medoo": "^1.0",
 		"phpoffice/phpexcel": "^1.8"
 	},
 	"autoload": {
