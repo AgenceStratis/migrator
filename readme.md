@@ -11,15 +11,15 @@ You can install Migrator with composer by adding this configuration to your **co
 
 ```json
 {
-  "repositories": [
-    {
-      "url": "https://github.com/AgenceStratis/migrator.git",
-      "type": "git"
+    "repositories": [
+        {
+            "url": "https://github.com/AgenceStratis/migrator.git",
+            "type": "git"
+        }
+    ],
+    "require": {
+        "AgenceStratis/migrator": "dev-master"
     }
-  ],
-  "require": {
-    "AgenceStratis/migrator": "dev-master"
-  }
 }
 ```
 
@@ -37,7 +37,7 @@ $migrator->process();
 Use as an executable
 --------------------
 
-It's possible to create an application with [PHP Box](https://github.com/box-project/box2).
+It's possible to create an application with [PHP Box](https://github.com/box-project/box2)
 
 Just clone this repo and run `box.phar build`
 
@@ -51,20 +51,18 @@ Configuration
 -------------
 
 Configuration files use YAML language<br>
-It must include a [source](Source.md) and a [destination](Destination.md)
+It must include a **source** and a **destination**
 
 ###### Example
 
 ```yaml
 source:
-  type: sql
-  options:
-    database_name: app
+    type: db
+    dbname: app
     username: root
     table: users
 
 dest:
-  type: csv
-  options:
-    file: users.csv
+    type: csv
+    filename: users.csv
 ```
