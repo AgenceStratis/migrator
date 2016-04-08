@@ -27,7 +27,7 @@ class Configuration
      * @param mixed $default
      * @return array|null
      */
-    public function get(array $search = array(), $default = null)
+    public function get(array $search, $default = null)
     {
         // Set current position at data root
         $current = $this->data;
@@ -57,7 +57,7 @@ class Configuration
     public function export(array $search = array())
     {
         return new Configuration(
-            $this->get($search)
+            $this->get($search, array())
         );
     }
 }
