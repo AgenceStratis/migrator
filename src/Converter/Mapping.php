@@ -58,8 +58,8 @@ class Mapping implements ItemConverterInterface
 
         // Apply custom route to the item
         foreach ($this->route as $key => $newKey) {
-            if (array_key_exists($newKey, $item)) {
-                $routedItem[$key] = $item[$newKey];
+            if (array_key_exists($key, $item)) {
+                $routedItem[$newKey] = $item[$key];
             }
         }
 
