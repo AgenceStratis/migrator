@@ -133,12 +133,12 @@ class Migrator extends Workflow
      *  Migrator::summon(array('Writer', 'Json'), $config);
      *  Migrator::summon(array('Task', 'Typo3', 'MM'), $config);
      *
-     * @param string $namespace
+     * @param array $namespace
      * @param Configuration $config
      * @return mixed
      * @throws \Exception
      */
-    public static function summon($namespace, Configuration $config)
+    public static function summon(array $namespace, Configuration $config)
     {
         // Set namespace as camel case
         $namespace = array_values(
