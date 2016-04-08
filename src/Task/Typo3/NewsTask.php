@@ -12,13 +12,10 @@ use Stratis\Component\Migrator\Task\DefaultTask;
 class NewsTask extends DefaultTask
 {
     /**
-     * NewsTask constructor.
      * @param Configuration $config
      */
-    public function __construct(Configuration $config)
+    public function main(Configuration $config)
     {
-        parent::__construct($config);
-
         var_dump($this->data); die;
     }
 }

@@ -60,6 +60,19 @@ class DefaultTask implements ReaderInterface
         if (count($this->sources) > 0) {
             $this->data = current($this->sources);
         }
+
+        // Exec main with this task config
+        $this->main(
+            $config->export(array('task'))
+        );
+    }
+
+    /**
+     * @param Configuration $config
+     */
+    public function main(Configuration $config)
+    {
+        return;
     }
 
     /**
@@ -102,6 +115,7 @@ class DefaultTask implements ReaderInterface
     public function valid()
     {
         $key = key($this->data);
+
         return ($key !== null && $key !== false);
     }
 
