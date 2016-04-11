@@ -2,6 +2,8 @@
 
 namespace Stratis\Component\Migrator\Reader;
 
+use Stratis\Component\Migrator\Configuration;
+
 /**
  * Class ExcelReader
  * @package Stratis\Component\Migrator\Reader
@@ -14,18 +16,14 @@ class ExcelReader extends \Ddeboer\DataImport\Reader\ExcelReader
 {
     /**
      * ExcelReader constructor.
-     * @param $options
+     * @param Configuration $config
      */
-    public function __construct($options)
+    public function __construct(Configuration $config)
     {
-        $filename   = $options['filename'];
-        $header     = $options['header'];
-        $sheet      = $options['sheet'];
+        $filename   = $config->get(array('filename'));
+        $header     = $config->get(array('header'), false) ? 0 : null;
+        $sheet      = $config->get(array('sheet'), 0);
 
-        parent::__construct(
-            new \SplFileObject($filename),
-            ($header ? 0 : null),
-            $sheet
-        );
+        parent::__construct(new \SplFileObject($filename), $header, $sheet);
     }
 }
