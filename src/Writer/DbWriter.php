@@ -6,8 +6,6 @@ use Ddeboer\DataImport\Writer;
 use Ddeboer\DataImport\Exception\WriterException;
 use Stratis\Component\Migrator\Configuration;
 
-// TODO: Fix class and insert modes
-
 /**
  * Class DbWriter
  * @package Stratis\Component\Migrator\Writer
@@ -23,10 +21,9 @@ use Stratis\Component\Migrator\Configuration;
 class DbWriter extends \Ddeboer\DataImport\Writer\PdoWriter
 {
     /**
-     * @var string
+     * @var array
      */
-    protected $insertMode;
-
+    protected $uniqueFields;
 
     /**
      * DbWriter constructor.
@@ -41,63 +38,143 @@ class DbWriter extends \Ddeboer\DataImport\Writer\PdoWriter
         $password   = $config->get(array('password'), '');
         $table      = $config->get(array('table'), '');
 
-        $insertMode = $config->get(array('insert_mode'), 'insert');
+        // Array containing fields that need to be checked to avoid duplicate data
+        $this->uniqueFields = $config->get(array('unique'), array());
 
+        // Create PDO object from config
         $pdo = new \PDO($dbtype . ':host=' . $host . ';dbname=' . $dbname, $username, $password);
-        parent::__construct($pdo, $table);
 
-        $this->insertMode = strtolower($insertMode);
-        $this->pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_WARNING);
+        // Set PDO error modes (for error output)
+        $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_WARNING);
+
+        parent::__construct($pdo, $table);
     }
 
     /**
-     * Create Statement using mode value
+     * @param $statement
+     * @param array $item
+     * @return mixed
+     */
+    protected function query($statement, array $item)
+    {
+        // Prepare statement
+        $query = $this->pdo->prepare($statement);
+
+        // Execute with item values
+        if (!$query->execute(array_values($item))) {
+
+            // Output errors
+            $this->pdo->errorInfo();
+            var_dump($item);
+            die;
+        }
+
+        // Return query
+        return $query;
+    }
+
+    /**
      * @param array $item
      * @return string
      */
-    protected function createStatement(array $item)
+    protected function keys(array $item)
     {
-        $keys = implode(',', array_keys($item));
+        return implode(',', array_keys($item));
+    }
+
+    /**
+     * @param array $item
+     * @return string
+     */
+    protected function values(array $item)
+    {
+        return implode(',', array_values($item));
+    }
+
+    /**
+     * @param array $values
+     * @param string $delimiter
+     * @return string
+     */
+    protected function condition(array $values, $delimiter = ',')
+    {
+        return implode($delimiter,
+            array_map(
+                function ($key) {
+                    return $key . '=?';
+                },
+                array_keys($values)
+            )
+        );
+    }
+
+    /**
+     * @param array $values
+     * @return string
+     */
+    protected function where(array $values)
+    {
+        $where = $this->condition($values, ' AND ');
+        return strlen($where) ? ' WHERE ' . $where : '';
+    }
+
+    /**
+     * @param array $item
+     * @return bool
+     */
+    protected function itemExists(array $item)
+    {
+        // Get values from unique constraint
+        $values = array_intersect_key(
+            $item, array_flip($this->uniqueFields)
+        );
+
+        $query = $this->query(
+            "SELECT * FROM " . $this->tableName . $this->where($values), $values
+        );
+
+        return $query->rowCount() > 0;
+    }
+
+    /**
+     * @param array $item
+     */
+    protected function insertItem(array $item)
+    {
+        // Replace values by question marks
         $values = substr(str_repeat('?,', count($item)), 0, -1);
-        $statement = '';
 
-        switch ($this->insertMode) {
+        // Build query
+        $statement = "INSERT INTO " . $this->tableName . "(" . $this->keys($item) . ") VALUES(" . $values . ")";
 
-            // insert values and reset it if primary key is matched
-            case 'replace': {
-                $statement = "REPLACE INTO " . $this->tableName . " (" . $keys . ") VALUES (" . $values . ")";
-                break;
-            }
+        // Execute insert
+        $this->query($statement, $item);
+    }
 
-            // insert values if it doesn't exist
-            // useful for tables without primary key
-            case 'not_exists': {
+    /**
+     * @param array $item
+     */
+    protected function updateItem(array $item)
+    {
+        // Get values from unique constraint
+        $unique = array_intersect_key(
+            $item, array_flip($this->uniqueFields)
+        );
 
-                $where = implode(" AND ", array_map(
-                    function ($value, $key) {
-                        return $key . "='" . $value . "'";
-                    },
-                    $item,
-                    array_keys($item)
-                ));
+        // Get elements to update
+        $update = array_diff_key(
+            $item, array_flip($this->uniqueFields)
+        );
 
-                $statement = "INSERT INTO " . $this->tableName . " (" . $keys . ") SELECT '" . implode("','",
-                        array_values($item))
-                    . "' FROM DUAL WHERE NOT EXISTS ( SELECT * FROM " . $this->tableName
-                    . " WHERE " . $where . " ) LIMIT 1";
-                break;
-            }
+        // Execute query if there are elements to update
+        if (count($update) > 0) {
 
-            // classic insert, may cause errors if primary key is specified
-            case 'insert':
-            default: {
-                $statement = "INSERT INTO " . $this->tableName . " (" . $keys . ") VALUES (" . $values . ")";
-            }
+            // Build query string
+            $statement = "UPDATE " . $this->tableName . " SET " . $this->condition($update) . $this->where($unique);
+
+            // Execute query with merged args
+            $this->query($statement, array_merge($update, $unique));
         }
-
-        // var_dump($statement); die;
-
-        return $statement;
     }
 
     /**
@@ -108,28 +185,13 @@ class DbWriter extends \Ddeboer\DataImport\Writer\PdoWriter
     public function writeItem(array $item)
     {
         try {
-
-            $this->statement = $this->pdo->prepare(
-                $this->createStatement($item)
-            );
-
-            //for PDO objects that do not have exceptions enabled
-            if (!$this->statement) {
-                throw new WriterException('Failed to prepare write statement for item: ' . implode(',', $item));
+            if ($this->itemExists($item)) {
+                $this->updateItem($item);
+            } else {
+                $this->insertItem($item);
             }
-
-            //do the insert
-            if (!$this->statement->execute(array_values($item))) {
-
-                $this->pdo->errorInfo();
-                var_dump($item);
-                die;
-
-                // throw new WriterException('Failed to write item: '.implode(',', $item));
-            }
-
         } catch (\Exception $e) {
-            //convert exception so the abstracton doesn't leak
+            //convert exception so the abstraction doesn't leak
             throw new WriterException('Write failed (' . $e->getMessage() . ').', null, $e);
         }
     }
