@@ -43,6 +43,14 @@ class SyncTask extends DefaultTask
 
         // Download files from remote server
         foreach ($source as $record) {
+
+            if (!array_key_exists('file', $record)) {
+                throw new \Exception('Task/Sync: The record does not have a \'file\' field!');
+            }
+
+            // No file found
+            if (empty($record['file'])) continue;
+
             $file = new File\Read($remote . '/' . $record['file']);
             $file->copy($local . '/' . $record['file']);
         }
