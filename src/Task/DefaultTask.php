@@ -62,9 +62,7 @@ class DefaultTask implements ReaderInterface
         }
 
         // Exec main with this task config
-        $this->main(
-            $config->export(array('task'))
-        );
+        $this->main($config->export());
     }
 
     /**
