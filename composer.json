@@ -14,7 +14,8 @@
 		"php": ">=5.5.9",
 		"ddeboer/data-import": "@stable",
 		"symfony/yaml": "^3.0",
-		"phpoffice/phpexcel": "^1.8"
+		"phpoffice/phpexcel": "^1.8",
+		"sunra/php-simple-html-dom-parser": "^1.5"
 	},
 	"autoload": {
 		"psr-4": {
