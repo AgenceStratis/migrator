@@ -33,11 +33,11 @@ class DbReader extends \Ddeboer\DataImport\Reader\PdoReader
         $table      = $config->get(array('table'), '');
         $query      = $config->get(array('query'), '');
 
-        if ($table === '') {
+        if ($table . $query == '') {
             throw new \Exception('Table name is not defined');
         }
 
-        if ($query === '') {
+        if ($query == '') {
             $query = 'SELECT * FROM ' . $table;
         }
 

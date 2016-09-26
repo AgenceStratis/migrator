@@ -124,6 +124,11 @@ class DbWriter extends \Ddeboer\DataImport\Writer\PdoWriter
      */
     protected function itemExists(array $item)
     {
+        // No unique field has been set
+        if (count($this->uniqueFields) == 0) {
+            return false;
+        }
+
         // Get values from unique constraint
         $values = array_intersect_key(
             $item, array_flip($this->uniqueFields)
