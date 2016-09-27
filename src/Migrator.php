@@ -23,7 +23,7 @@ class Migrator extends Workflow
     /**
      * @var int
      */
-    const version = 8;
+    const version = 9;
 
     /**
      * @var array
@@ -67,18 +67,18 @@ class Migrator extends Workflow
         );
 
         // Add processors to the workflow
-        $this->addItemConverter(
-            new Processor(
-                $this->conf->get(array('processors'), array())
-            )
-        );
+        $processor = $this->conf->get(array('processors'), array());
+
+        if (is_array($processor) && !empty($processor)) {
+            $this->addItemConverter(new Processor($processor));
+        }
 
         // Add mapping to the workflow
-        $this->addItemConverter(
-            new Mapping(
-                $this->conf->get(array('mapping'), array())
-            )
-        );
+        $mapping = $this->conf->get(array('mapping'), array());
+
+        if (is_array($mapping) && !empty($mapping)) {
+            $this->addItemConverter(new Mapping($mapping));
+        }
     }
 
     /**

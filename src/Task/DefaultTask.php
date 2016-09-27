@@ -37,6 +37,11 @@ class DefaultTask implements ReaderInterface
 
         foreach ($sources as $key => $source) {
 
+            // Skip this source if not defined
+            if (!is_array($source) || empty($source)) {
+                continue;
+            }
+
             // Empty data array
             $data = array();
 

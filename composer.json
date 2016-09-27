@@ -16,7 +16,8 @@
 		"symfony/yaml": "^3.0",
 		"phpoffice/phpexcel": "^1.8",
 		"sunra/php-simple-html-dom-parser": "^1.5",
-		"hoa/file": "1.16.01.15"
+		"hoa/file": "1.16.01.15",
+		"hoa/mime": "3.16.01.15"
 	},
 	"autoload": {
 		"psr-4": {
