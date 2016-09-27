@@ -25,7 +25,7 @@ class Configuration
     /**
      * @param array $search
      * @param mixed $default
-     * @return array|null
+     * @return mixed|null
      */
     public function get(array $search, $default = null)
     {

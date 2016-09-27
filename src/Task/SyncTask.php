@@ -20,6 +20,7 @@ class SyncTask extends DefaultTask
     {
         $remote = $config->get(array('task', 'remote'), '');
         $local = $config->get(array('task', 'local'), '');
+        $delay = $config->get(array('task', 'delay'), 0);
 
         if (empty($remote)) {
             throw new \Exception('Task/Sync: No remote path defined.');
@@ -43,6 +44,8 @@ class SyncTask extends DefaultTask
 
         // Download files from remote server
         foreach ($source as $record) {
+
+            usleep($delay);
 
             if (!array_key_exists('file', $record)) {
                 throw new \Exception('Task/Sync: The record does not have a \'file\' field!');
