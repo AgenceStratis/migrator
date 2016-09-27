@@ -12,12 +12,12 @@
 	],
 	"require": {
 		"php": ">=5.5.9",
-		"ddeboer/data-import": "@stable",
+		"ddeboer/data-import": "^0.18.0",
 		"symfony/yaml": "^3.0",
 		"phpoffice/phpexcel": "^1.8",
 		"sunra/php-simple-html-dom-parser": "^1.5",
 		"hoa/file": "1.16.01.15",
-		"hoa/mime": "3.16.01.15"
+		"dfridrich/php-mime-type": "^1.0"
 	},
 	"autoload": {
 		"psr-4": {

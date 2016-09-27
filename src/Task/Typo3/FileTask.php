@@ -5,7 +5,7 @@ namespace Stratis\Component\Migrator\Task\Typo3;
 use Stratis\Component\Migrator\Configuration;
 use Stratis\Component\Migrator\Task\DefaultTask;
 use Hoa\Iterator\Directory;
-use Hoa\Mime\Mime;
+use Defr\MimeType;
 
 /**
  * Class FileTask
@@ -59,7 +59,7 @@ class FileTask extends DefaultTask
                 'identifier_hash' => sha1($identifier),
                 'folder_hash' => sha1($fileDir),
                 'extension' => $file->getExtension(),
-                'mime_type' => Mime::getMimeFromExtension($file->getExtension()),
+                'mime_type' => MimeType::get($file->getFilename()),
                 'name' => $file->getFilename(),
                 'sha1' => sha1_file($file->getRealPath()),
                 'size' => $file->getSize(),
