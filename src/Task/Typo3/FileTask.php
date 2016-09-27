@@ -49,6 +49,9 @@ class FileTask extends DefaultTask
             // Connect to the file
             $identifier = $fileDir . '/' . $file->getFilename();
 
+            // File is invalid
+            if ($file->getSize() === 0) continue;
+
             // Update record info with typo3 sys_file compatible data
             $this->data[] = [
                 'identifier' => $identifier,
