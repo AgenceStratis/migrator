@@ -11,7 +11,15 @@
         "ddeboer/data-import/tests",
         "phpoffice/phpexcel/Examples",
         "phpoffice/phpexcel/unitTests",
-        "symfony/yaml/Tests"
+        "symfony/yaml/Tests",
+        "dfridrich/php-mime-type/Tests",
+        "hoa/consistency/Test",
+        "hoa/event/Test",
+        "hoa/exception/Test",
+        "hoa/file/Test",
+        "hoa/iterator/Test",
+        "hoa/protocol/Test",
+        "hoa/stream/Test"
       ],
       "in": "vendor"
     }
