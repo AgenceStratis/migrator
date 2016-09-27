@@ -18,8 +18,8 @@ class SyncTask extends DefaultTask
      */
     public function main(Configuration $config)
     {
-        $remote = $config->get(array('remote'), '');
-        $local = $config->get(array('local'), '');
+        $remote = $config->get(array('task', 'remote'), '');
+        $local = $config->get(array('task', 'local'), '');
 
         if (empty($remote)) {
             throw new \Exception('Task/Sync: No remote path defined.');
