@@ -54,8 +54,12 @@ class SyncTask extends DefaultTask
             // No file found
             if (empty($record['file'])) continue;
 
-            $file = new File\Read($remote . '/' . $record['file']);
-            $file->copy($local . '/' . $record['file']);
+            try {
+                $file = new File\Read($remote . '/' . $record['file']);
+                $file->copy($local . '/' . $record['file']);
+            } catch (\Exception $e) {
+                // Can't read remote file
+            }
         }
 
         exit;
