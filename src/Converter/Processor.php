@@ -62,7 +62,7 @@ class Processor implements ItemConverterInterface
                     }
 
                     // Use processor exec function
-                    $item[$field] = $class::exec($item[$field], $options);
+                    $item[$field] = $class::exec($item[$field], $options, $item);
                 }
             }
         }

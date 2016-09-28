@@ -6,14 +6,13 @@ namespace Stratis\Component\Migrator\Processor;
  * Class UpperCaseProcessor
  * @package Stratis\Component\Migrator\Processor
  */
-class UpperCaseProcessor implements ProcessorInterface
+class UpperCaseProcessor extends Processor
 {
     /**
      * @param string $text
-     * @param null $option
      * @return string
      */
-    public static function exec($text, $option = null)
+    public static function exec($text)
     {
         return strtoupper($text);
     }

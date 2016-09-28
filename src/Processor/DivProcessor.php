@@ -6,7 +6,7 @@ namespace Stratis\Component\Migrator\Processor;
  * Class DivProcessor
  * @package Stratis\Component\Migrator\Processor
  */
-class DivProcessor implements ProcessorInterface
+class DivProcessor extends Processor
 {
     /**
      * @param float $value

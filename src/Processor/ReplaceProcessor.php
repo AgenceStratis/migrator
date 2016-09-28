@@ -6,7 +6,7 @@ namespace Stratis\Component\Migrator\Processor;
  * Class ReplaceProcessor
  * @package Stratis\Component\Migrator\Processor
  */
-class ReplaceProcessor implements ProcessorInterface
+class ReplaceProcessor extends Processor
 {
     /**
      * @param string $text

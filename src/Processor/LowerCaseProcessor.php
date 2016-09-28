@@ -6,14 +6,13 @@ namespace Stratis\Component\Migrator\Processor;
  * Class LowerCaseProcessor
  * @package Stratis\Component\Migrator\Processor
  */
-class LowerCaseProcessor implements ProcessorInterface
+class LowerCaseProcessor extends Processor
 {
     /**
      * @param string $text
-     * @param null $option
      * @return string
      */
-    public static function exec($text, $option = null)
+    public static function exec($text)
     {
         return strtolower($text);
     }

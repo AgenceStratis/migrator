@@ -6,14 +6,13 @@ namespace Stratis\Component\Migrator\Processor;
  * Class StripTagsProcessor
  * @package Stratis\Component\Migrator\Processor
  */
-class StripTagsProcessor implements ProcessorInterface
+class StripTagsProcessor extends Processor
 {
     /**
      * @param string $text
-     * @param null $option
      * @return string
      */
-    public static function exec($text, $option = null)
+    public static function exec($text)
     {
         return strip_tags($text);
     }

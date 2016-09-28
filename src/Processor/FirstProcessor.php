@@ -6,14 +6,13 @@ namespace Stratis\Component\Migrator\Processor;
  * Class FirstProcessor
  * @package Stratis\Component\Migrator\Processor
  */
-class FirstProcessor implements ProcessorInterface
+class FirstProcessor extends Processor
 {
     /**
      * @param array $array
-     * @param null $option
      * @return mixed
      */
-    public static function exec($array, $option = null)
+    public static function exec($array)
     {
         if(!empty($array)) {
             reset($array);

@@ -6,14 +6,13 @@ namespace Stratis\Component\Migrator\Processor;
  * Class NotProcessor
  * @package Stratis\Component\Migrator\Processor
  */
-class NotProcessor implements ProcessorInterface
+class NotProcessor extends Processor
 {
     /**
-     * @param string $value
-     * @param null $option
+     * @param mixed $value
      * @return bool
      */
-    public static function exec($value, $option = null)
+    public static function exec($value)
     {
         return ! $value;
     }

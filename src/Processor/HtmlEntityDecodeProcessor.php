@@ -6,14 +6,13 @@ namespace Stratis\Component\Migrator\Processor;
  * Class HtmlEntityDecodeProcessor
  * @package Stratis\Component\Migrator\Processor
  */
-class HtmlEntityDecodeProcessor implements ProcessorInterface
+class HtmlEntityDecodeProcessor extends Processor
 {
     /**
      * @param string $text
-     * @param null $option
      * @return string
      */
-    public static function exec($text, $option = null)
+    public static function exec($text)
     {
         return html_entity_decode($text);
     }

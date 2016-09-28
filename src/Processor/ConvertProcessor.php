@@ -6,10 +6,10 @@ namespace Stratis\Component\Migrator\Processor;
  * Class ConvertProcessor
  * @package Stratis\Component\Migrator\Processor
  */
-class ConvertProcessor implements ProcessorInterface
+class ConvertProcessor extends Processor
 {
     /**
-     * @param $value
+     * @param mixed $value
      * @param string $type
      * @return mixed
      */

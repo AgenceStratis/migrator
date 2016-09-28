@@ -6,11 +6,11 @@ namespace Stratis\Component\Migrator\Processor;
  * Class SetProcessor
  * @package Stratis\Component\Migrator\Processor
  */
-class SetProcessor implements ProcessorInterface
+class SetProcessor extends Processor
 {
     /**
-     * @param $value
-     * @param $newValue
+     * @param mixed $value
+     * @param mixed $newValue
      * @return mixed
      */
     public static function exec($value, $newValue)

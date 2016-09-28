@@ -6,7 +6,7 @@ namespace Stratis\Component\Migrator\Processor;
  * Class AddProcessor
  * @package Stratis\Component\Migrator\Processor
  */
-class AddProcessor implements ProcessorInterface
+class AddProcessor extends Processor
 {
     /**
      * @param float $value

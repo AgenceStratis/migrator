@@ -6,7 +6,7 @@ namespace Stratis\Component\Migrator\Processor;
  * Class PopProcessor
  * @package Stratis\Component\Migrator\Processor
  */
-class PopProcessor implements ProcessorInterface
+class PopProcessor extends Processor
 {
     /**
      * @param array $array

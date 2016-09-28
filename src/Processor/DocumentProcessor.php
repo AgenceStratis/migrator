@@ -7,7 +7,7 @@ use \Sunra\PhpSimple\HtmlDomParser;
  * Class DocumentProcessor
  * @package Stratis\Component\Migrator\Processor
  */
-class DocumentProcessor implements ProcessorInterface
+class DocumentProcessor extends Processor
 {
     /**
      * @param string $text

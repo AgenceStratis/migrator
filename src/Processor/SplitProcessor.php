@@ -6,11 +6,11 @@ namespace Stratis\Component\Migrator\Processor;
  * Class SplitProcessor
  * @package Stratis\Component\Migrator\Processor
  */
-class SplitProcessor implements ProcessorInterface
+class SplitProcessor extends Processor
 {
     /**
      * @param array $array
-     * @param $delimiter
+     * @param string $delimiter
      * @return string
      */
     public static function exec($array, $delimiter)

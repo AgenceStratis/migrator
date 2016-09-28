@@ -6,14 +6,13 @@ namespace Stratis\Component\Migrator\Processor;
  * Class CamelCaseProcessor
  * @package Stratis\Component\Migrator\Processor
  */
-class CamelCaseProcessor implements ProcessorInterface
+class CamelCaseProcessor extends Processor
 {
     /**
      * @param string $text
-     * @param null $option
      * @return string
      */
-    public static function exec($text, $option = null)
+    public static function exec($text)
     {
         return ucwords(strtolower($text));
     }

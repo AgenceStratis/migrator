@@ -6,7 +6,7 @@ namespace Stratis\Component\Migrator\Processor;
  * Class InProcessor
  * @package Stratis\Component\Migrator\Processor
  */
-class InProcessor implements ProcessorInterface
+class InProcessor extends Processor
 {
     /**
      * @param string $value
