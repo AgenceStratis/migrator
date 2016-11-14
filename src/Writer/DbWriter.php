@@ -37,12 +37,13 @@ class DbWriter extends \Ddeboer\DataImport\Writer\PdoWriter
         $username   = $config->get(array('username'), 'root');
         $password   = $config->get(array('password'), '');
         $table      = $config->get(array('table'), '');
+        $charset    = $config->get(array('charset'), 'utf8');
 
         // Array containing fields that need to be checked to avoid duplicate data
         $this->uniqueFields = $config->get(array('unique'), array());
 
         // Create PDO object from config
-        $pdo = new \PDO($dbtype . ':host=' . $host . ';dbname=' . $dbname, $username, $password);
+        $pdo = new \PDO($dbtype . ':host=' . $host . ';dbname=' . $dbname . ';charset=' . $charset, $username, $password);
 
         // Set PDO error modes (for error output)
         $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_WARNING);
