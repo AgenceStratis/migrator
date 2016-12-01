@@ -23,7 +23,7 @@ class Migrator extends Workflow
     /**
      * @var int
      */
-    const version = 9.6;
+    const version = 9.7;
 
     /**
      * @var array
